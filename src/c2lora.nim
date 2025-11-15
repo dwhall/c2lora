@@ -1,5 +1,9 @@
-# This is just an example to get you started. A typical binary package
-# uses this file as the main entry point of the application.
+{.warning[UnusedImport]: off.}
+import startup
+{.warning[UnusedImport]: on.}
 
-when isMainModule:
-  echo("Hello, World!")
+proc main() {.exportc.} =
+  
+  # Main loop
+  while true:
+    discard
