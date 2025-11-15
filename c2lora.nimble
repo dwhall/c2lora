@@ -5,6 +5,7 @@ author        = "!!Dean"
 description   = "Codec 2 over LoRa"
 license       = "MIT"
 srcDir        = "src"
+binDir        = "build"
 bin           = @["c2lora"]
 
 
@@ -13,10 +14,16 @@ bin           = @["c2lora"]
 requires "nim >= 2.2.0"
 
 # Custom Build Tasks
+import os
 
-task firmware, "Build Firmware":
-    exec "nim c --skipCfg --out:build/c2lora.elf src/c2lora.nim"
+after build:
+  let buildPath = binDir / bin[0]
+  when defined(windows):
+    mvFile(buildPath & ".exe", buildPath & ".elf")
+  else:
+    mvFile(buildPath, buildPath & ".elf")
+  exec("arm-none-eabi-objcopy -O ihex " & buildPath & ".elf " & buildPath & ".hex")
+  exec("arm-none-eabi-objcopy -O binary " & buildPath & ".elf " & buildPath & ".bin")
 
-task hex, "Build Firmware and convert to hex":
-    exec "nimble firmware"
-    exec "arm-none-eabi-objcopy -O ihex build/c2lora.elf build/c2lora.hex"
+task clear, "Deletes the previously built compiler artifacts":
+  rmDir(binDir)
