@@ -2,7 +2,7 @@
 import startup
 {.warning[UnusedImport]: on.}
 
-proc main() {.exportc.} =
+proc entry() {.exportc: "entry".} =
   
   # Main loop
   while true:

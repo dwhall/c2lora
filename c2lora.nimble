@@ -18,10 +18,6 @@ import os
 
 after build:
   let buildPath = binDir / bin[0]
-  when defined(windows):
-    mvFile(buildPath & ".exe", buildPath & ".elf")
-  else:
-    mvFile(buildPath, buildPath & ".elf")
   exec("arm-none-eabi-objcopy -O ihex " & buildPath & ".elf " & buildPath & ".hex")
   exec("arm-none-eabi-objcopy -O binary " & buildPath & ".elf " & buildPath & ".bin")
 

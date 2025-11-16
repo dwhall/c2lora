@@ -1,12 +1,12 @@
 {.push stackTrace: off.}
 
-# forward declare main
-proc main() {.importc.}
+# forward declare entry function
+proc entry() {.importc.}
 
 # Arm cortex m4 architecture uses Reset_Handler as an
 # entry point.
 proc Reset_Handler() {.exportc, used.} =
-  main()
+  entry()
   while true: discard
 
 {.emit: """
