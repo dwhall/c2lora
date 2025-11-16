@@ -25,5 +25,6 @@ after build:
   exec("arm-none-eabi-objcopy -O ihex " & buildPath & ".elf " & buildPath & ".hex")
   exec("arm-none-eabi-objcopy -O binary " & buildPath & ".elf " & buildPath & ".bin")
 
-task clear, "Deletes the previously built compiler artifacts":
+before clean:
   rmDir(binDir)
+  quit(0)
