@@ -1,5 +1,7 @@
 {.push stackTrace: off.}
 
+{.compile: "stubs.c".}
+
 # forward declare entry function
 proc entry() {.importc.}
 

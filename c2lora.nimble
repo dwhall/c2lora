@@ -18,7 +18,6 @@ import os
 
 after build:
   let buildPath = binDir / bin[0]
-  exec("arm-none-eabi-objcopy -O ihex " & buildPath & ".elf " & buildPath & ".hex")
   exec("arm-none-eabi-objcopy -O binary " & buildPath & ".elf " & buildPath & ".bin")
 
 before clean:

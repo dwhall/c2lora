@@ -9,8 +9,10 @@ switch("arm.any.gcc.exe", "arm-none-eabi-gcc")
 switch("arm.any.gcc.linkerexe", "arm-none-eabi-gcc")
 
 # Compiler options
-switch("arm.any.gcc.options.always", "-w -fmax-errors=4 -march=armv7e-m -mtune=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16")
-switch("arm.any.gcc.options.linker", "-w -march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T linkers/nrf52.ld -o build/c2lora.elf -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections")
+switch("arm.any.gcc.options.always", "-w -fmax-errors=4 -march=armv7e-m -mtune=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections")
+switch("arm.any.gcc.options.linker", "-w -march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T linkers/nrf52.ld -o build/c2lora.elf -Wl,--gc-sections")
+
+switch("passL","deps/libc/libc.a")
 
 # Nim cache directory
 switch("nimcache", "build/nimcache")

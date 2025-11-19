@@ -1,3 +1,6 @@
 [submodule "wiki"]
 	path = wiki
 	url = https://github.com/dwhall/c2lora.wiki.git
+[submodule "deps/libc/embeddedartistry"]
+	path = deps/libc/embeddedartistry
+	url = https://github.com/embeddedartistry/libc.git
