@@ -1,0 +1,38 @@
+# To learn how to use the output of the declarations below, visit:
+# https://github.com/dwhall/minisvd2nim/blob/main/README.md#how-to-access-the-device
+
+import metagenerator
+
+#!fmt: off
+declarePeripheral(peripheralName = AAR, baseAddress = 0x4000F000'u32, peripheralDesc = "Accelerated Address Resolver")
+declareInterrupt(peripheralName = AAR, interruptName = CCM_AAR, interruptValue = 15, interruptDesc = "")
+declareRegister(peripheralName = AAR, registerName = TASKS_START, addressOffset = 0x000'u32, readAccess = false, writeAccess = true, registerDesc = "Start resolving addresses based on IRKs specified in the IRK data structure")
+declareField(peripheralName = AAR, registerName = TASKS_START, fieldName = TASKS_START, bitOffset = 0, bitWidth = 1, readAccess = false, writeAccess = true, fieldDesc = "Start resolving addresses based on IRKs specified in the IRK data structure")
+declareRegister(peripheralName = AAR, registerName = TASKS_STOP, addressOffset = 0x008'u32, readAccess = false, writeAccess = true, registerDesc = "Stop resolving addresses")
+declareField(peripheralName = AAR, registerName = TASKS_STOP, fieldName = TASKS_STOP, bitOffset = 0, bitWidth = 1, readAccess = false, writeAccess = true, fieldDesc = "Stop resolving addresses")
+declareRegister(peripheralName = AAR, registerName = EVENTS_END, addressOffset = 0x100'u32, readAccess = true, writeAccess = true, registerDesc = "Address resolution procedure complete")
+declareField(peripheralName = AAR, registerName = EVENTS_END, fieldName = EVENTS_END, bitOffset = 0, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Address resolution procedure complete")
+declareRegister(peripheralName = AAR, registerName = EVENTS_RESOLVED, addressOffset = 0x104'u32, readAccess = true, writeAccess = true, registerDesc = "Address resolved")
+declareField(peripheralName = AAR, registerName = EVENTS_RESOLVED, fieldName = EVENTS_RESOLVED, bitOffset = 0, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Address resolved")
+declareRegister(peripheralName = AAR, registerName = EVENTS_NOTRESOLVED, addressOffset = 0x108'u32, readAccess = true, writeAccess = true, registerDesc = "Address not resolved")
+declareField(peripheralName = AAR, registerName = EVENTS_NOTRESOLVED, fieldName = EVENTS_NOTRESOLVED, bitOffset = 0, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Address not resolved")
+declareRegister(peripheralName = AAR, registerName = INTENSET, addressOffset = 0x304'u32, readAccess = true, writeAccess = true, registerDesc = "Enable interrupt")
+declareField(peripheralName = AAR, registerName = INTENSET, fieldName = END, bitOffset = 0, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Write '1' to enable interrupt for event END")
+declareField(peripheralName = AAR, registerName = INTENSET, fieldName = RESOLVED, bitOffset = 1, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Write '1' to enable interrupt for event RESOLVED")
+declareField(peripheralName = AAR, registerName = INTENSET, fieldName = NOTRESOLVED, bitOffset = 2, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Write '1' to enable interrupt for event NOTRESOLVED")
+declareRegister(peripheralName = AAR, registerName = INTENCLR, addressOffset = 0x308'u32, readAccess = true, writeAccess = true, registerDesc = "Disable interrupt")
+declareField(peripheralName = AAR, registerName = INTENCLR, fieldName = END, bitOffset = 0, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Write '1' to disable interrupt for event END")
+declareField(peripheralName = AAR, registerName = INTENCLR, fieldName = RESOLVED, bitOffset = 1, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Write '1' to disable interrupt for event RESOLVED")
+declareField(peripheralName = AAR, registerName = INTENCLR, fieldName = NOTRESOLVED, bitOffset = 2, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Write '1' to disable interrupt for event NOTRESOLVED")
+declareRegister(peripheralName = AAR, registerName = STATUS, addressOffset = 0x400'u32, readAccess = true, writeAccess = false, registerDesc = "Resolution status")
+declareField(peripheralName = AAR, registerName = STATUS, fieldName = STATUS, bitOffset = 0, bitWidth = 4, readAccess = true, writeAccess = false, fieldDesc = "The IRK that was used last time an address was resolved")
+declareRegister(peripheralName = AAR, registerName = ENABLE, addressOffset = 0x500'u32, readAccess = true, writeAccess = true, registerDesc = "Enable AAR")
+declareField(peripheralName = AAR, registerName = ENABLE, fieldName = ENABLE, bitOffset = 0, bitWidth = 2, readAccess = true, writeAccess = true, fieldDesc = "Enable or disable AAR")
+declareRegister(peripheralName = AAR, registerName = NIRK, addressOffset = 0x504'u32, readAccess = true, writeAccess = true, registerDesc = "Number of IRKs")
+declareField(peripheralName = AAR, registerName = NIRK, fieldName = NIRK, bitOffset = 0, bitWidth = 5, readAccess = true, writeAccess = true, fieldDesc = "Number of Identity Root Keys available in the IRK data structure")
+declareRegister(peripheralName = AAR, registerName = IRKPTR, addressOffset = 0x508'u32, readAccess = true, writeAccess = true, registerDesc = "Pointer to IRK data structure")
+declareField(peripheralName = AAR, registerName = IRKPTR, fieldName = IRKPTR, bitOffset = 0, bitWidth = 32, readAccess = true, writeAccess = true, fieldDesc = "Pointer to the IRK data structure")
+declareRegister(peripheralName = AAR, registerName = ADDRPTR, addressOffset = 0x510'u32, readAccess = true, writeAccess = true, registerDesc = "Pointer to the resolvable address")
+declareField(peripheralName = AAR, registerName = ADDRPTR, fieldName = ADDRPTR, bitOffset = 0, bitWidth = 32, readAccess = true, writeAccess = true, fieldDesc = "Pointer to the resolvable address (6-bytes)")
+declareRegister(peripheralName = AAR, registerName = SCRATCHPTR, addressOffset = 0x514'u32, readAccess = true, writeAccess = true, registerDesc = "Pointer to data area used for temporary storage")
+declareField(peripheralName = AAR, registerName = SCRATCHPTR, fieldName = SCRATCHPTR, bitOffset = 0, bitWidth = 32, readAccess = true, writeAccess = true, fieldDesc = "Pointer to a scratch data area used for temporary storage during resolution. A space of minimum 3 bytes must be reserved.")

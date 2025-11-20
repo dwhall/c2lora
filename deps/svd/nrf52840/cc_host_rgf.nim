@@ -1,0 +1,22 @@
+# To learn how to use the output of the declarations below, visit:
+# https://github.com/dwhall/minisvd2nim/blob/main/README.md#how-to-access-the-device
+
+import metagenerator
+
+#!fmt: off
+declarePeripheral(peripheralName = CC_HOST_RGF, baseAddress = 0x5002A000'u32, peripheralDesc = "CRYPTOCELL HOST_RGF interface")
+declareRegister(peripheralName = CC_HOST_RGF, registerName = HOST_CRYPTOKEY_SEL, addressOffset = 0x1A38'u32, readAccess = true, writeAccess = true, registerDesc = "AES hardware key select")
+declareField(peripheralName = CC_HOST_RGF, registerName = HOST_CRYPTOKEY_SEL, fieldName = HOST_CRYPTOKEY_SEL, bitOffset = 0, bitWidth = 2, readAccess = true, writeAccess = true, fieldDesc = "Select the source of the HW key that is used by the AES engine")
+declareRegister(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KPRTL_LOCK, addressOffset = 0x1A4C'u32, readAccess = true, writeAccess = true, registerDesc = "This write-once register is the K_PRTL lock register. When this register is set, K_PRTL cannot be used and a zeroed key will be used instead. The value of this register is saved in the CRYPTOCELL AO power domain.")
+declareField(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KPRTL_LOCK, fieldName = HOST_IOT_KPRTL_LOCK, bitOffset = 0, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "This register is the K_PRTL lock register. When this register is set, K_PRTL cannot be used and a zeroed key will be used instead. The value of this register is saved in the CRYPTOCELL AO power domain.")
+declareRegister(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KDR0, addressOffset = 0x1A50'u32, readAccess = true, writeAccess = true, registerDesc = "This register holds bits 31:0 of K_DR. The value of this register is saved in the CRYPTOCELL AO power domain. Reading from this address returns the K_DR valid status indicating if K_DR is successfully retained.")
+declareField(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KDR0, fieldName = HOST_IOT_KDR0, bitOffset = 0, bitWidth = 32, readAccess = true, writeAccess = true, fieldDesc = "Write: K_DR bits 31:0. Read: 0x00000000 when 128-bit K_DR key value is not yet retained in the CRYPTOCELL AO power domain. Read: 0x00000001 when 128-bit K_DR key value is successfully retained in the CRYPTOCELL AO power domain.")
+declareRegister(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KDR1, addressOffset = 0x1A54'u32, readAccess = false, writeAccess = true, registerDesc = "This register holds bits 63:32 of K_DR. The value of this register is saved in the CRYPTOCELL AO power domain.")
+declareField(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KDR1, fieldName = HOST_IOT_KDR1, bitOffset = 0, bitWidth = 32, readAccess = false, writeAccess = true, fieldDesc = "K_DR bits 63:32")
+declareRegister(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KDR2, addressOffset = 0x1A58'u32, readAccess = false, writeAccess = true, registerDesc = "This register holds bits 95:64 of K_DR. The value of this register is saved in the CRYPTOCELL AO power domain.")
+declareField(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KDR2, fieldName = HOST_IOT_KDR2, bitOffset = 0, bitWidth = 32, readAccess = false, writeAccess = true, fieldDesc = "K_DR bits 95:64")
+declareRegister(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KDR3, addressOffset = 0x1A5C'u32, readAccess = false, writeAccess = true, registerDesc = "This register holds bits 127:96 of K_DR. The value of this register is saved in the CRYPTOCELL AO power domain.")
+declareField(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_KDR3, fieldName = HOST_IOT_KDR3, bitOffset = 0, bitWidth = 32, readAccess = false, writeAccess = true, fieldDesc = "K_DR bits 127:96")
+declareRegister(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_LCS, addressOffset = 0x1A60'u32, readAccess = true, writeAccess = true, registerDesc = "Controls lifecycle state (LCS) for CRYPTOCELL subsystem")
+declareField(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_LCS, fieldName = LCS, bitOffset = 0, bitWidth = 3, readAccess = true, writeAccess = true, fieldDesc = "Lifecycle state value. This field is write-once per reset.")
+declareField(peripheralName = CC_HOST_RGF, registerName = HOST_IOT_LCS, fieldName = LCS_IS_VALID, bitOffset = 8, bitWidth = 1, readAccess = true, writeAccess = true, fieldDesc = "Read-only field. Indicates if CRYPTOCELL LCS has been successfully configured since last reset.")
