@@ -1,1 +1,1 @@
-switch("path", "$projectDir/../svd/nrf52840")
+switch("path", "$projectDir/../deps/svd/nrf52840")
