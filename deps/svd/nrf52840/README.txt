@@ -3,5 +3,5 @@ Edits will be lost if the tool is run again.
 
 Tool:                 minisvd2nim.exe
 Tool args:            @["nrf52840.svd"]
-Tool version:         0.4.2-dev-7ce382b
+Tool version:         0.4.3-dev-91da578
 Input file version:   1
