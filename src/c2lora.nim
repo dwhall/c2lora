@@ -1,6 +1,9 @@
 import startup
 import p
 
+# RAK19007 Blue  LED2 == p15 on 40p CPU slot == P1.04/LED2
+# RAK19007 Green LED1 == p14 on 40p CPU slot == P1.03/LED1
+
 proc delay(t: int) =
   var n = t
   while n > 0:
@@ -10,16 +13,17 @@ proc delay(t: int) =
       dec x
 
 proc main() =
-  const ledPinNum = 4 # FIXME
+  const ledPinNum = 4
   const ledPinBit = 1'u32 shl ledPinNum
-  P0.DIR = ledPinBit # might need bit-invert depending on meaning of 0/1
+  P1.DIRSET = ledPinBit
+  #P1.DIRCLR = ledPinBit
   while true:
-    # Turn LED on
-    P0.OUTSET = ledPinBit
+    P1.OUTSET = ledPinBit
     delay(1000)
-    # Turn LED off
-    P0.OUTCLR = ledPinBit
+
+    P1.OUTCLR = ledPinBit
     delay(1000)
+
 
 proc entry() {.exportc: "entry".} =
   main()
