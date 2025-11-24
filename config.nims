@@ -18,7 +18,7 @@ switch("passL","deps/libc/libc.a")
 switch("nimcache", "build/nimcache")
 
 # Optimization
-# switch("opt", "size")
+switch("opt", "size")
 
 switch("noMain")
 
@@ -43,7 +43,6 @@ switch("define", "nimMemAlignTiny")
 # switch("define", "nimPreviewSlimSystem")  # https://nim-lang.org/blog/2022/12/21/version-20-rc.html
 
 # Debugging
-# switch("opt", "none")
 # switch("debugger", "native")
 
 # Preferences
