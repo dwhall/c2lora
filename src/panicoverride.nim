@@ -1,10 +1,3 @@
-# Simplest:
-#[
-proc rawoutput(s: string) = discard
-proc panic(s: string) = discard
-]#
-
-# A more elaborate option
 proc puts(s: cstring) {.importc, header: "<stdio.h>", cdecl.}
 proc putchar(c: int) {.importc, header: "<stdio.h>", cdecl.}
 proc exit(code: int) {.importc, header: "<stdlib.h>", cdecl.}
