@@ -31,6 +31,7 @@ before build:
 after build:
   let buildPath = binDir / bin[0]
   exec("arm-none-eabi-objcopy -O binary " & buildPath & ".elf " & buildPath & ".bin")
+  writeFile(buildPath & "-objdump.txt", staticExec(toExe("arm-none-eabi-objdump") & " -D " & buildPath & ".elf"))
   exec("python3 deps/uf2/utils/uf2conv.py " & buildPath & ".elf --output " & buildPath & ".uf2")
 
 before clean:
