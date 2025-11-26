@@ -12,11 +12,10 @@ proc delay(t: int) =
     while x > 0:
       dec x
 
-proc main() {.exportc.}=
+proc main() {.exportc.} =
   const ledPinNum = 4
   const ledPinBit = 1'u32 shl ledPinNum
   P1.DIRSET = ledPinBit
-  #P1.DIRCLR = ledPinBit
   while true:
     P1.OUTSET = ledPinBit
     delay(1000)

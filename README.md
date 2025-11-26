@@ -24,3 +24,8 @@ _BE SURE TO INIT AND UPDATE SUBMODULES_
 ## Releases
 
 None
+
+## References
+
+* [Cortex-M3 LL Details](https://tonyfu97.github.io/ARM-Cortex-M4/)
+
