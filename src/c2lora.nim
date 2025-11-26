@@ -1,4 +1,4 @@
-import startup
+include startup
 import p
 
 # RAK19007 Blue  LED2 == p15 on 40p CPU slot == P1.04/LED2
@@ -12,7 +12,7 @@ proc delay(t: int) =
     while x > 0:
       dec x
 
-proc main() {.exportc.} =
+proc main() =
   const ledPinNum = 4
   const ledPinBit = 1'u32 shl ledPinNum
   P1.DIRSET = ledPinBit

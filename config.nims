@@ -27,7 +27,6 @@ switch("noMain")
 switch("mm", "arc")
 switch("panics", "on")  # requires local panicoverride.nim
 switch("threads", "off")
-switch("stacktrace", "off")
 switch("profiler", "off")
 switch("checks", "off")
 switch("assertions", "off")

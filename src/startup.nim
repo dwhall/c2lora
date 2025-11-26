@@ -1,11 +1,8 @@
-{.compile: "stubs.c".}
-proc main() {.importc.}
-
-{.push stackTrace: off.}
+proc main
 
 # Arm cortex m4 architecture uses Reset_Handler as an
 # entry point.
-proc Reset_Handler() {.exportc, used.} =
+proc Reset_Handler() {.exportc.} =
   main()
   while true: discard
 
@@ -16,5 +13,3 @@ void (* const vectors[])(void) = {
     Reset_Handler,
 };
 """.}
-
-{.pop.}
