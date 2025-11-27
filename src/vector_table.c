@@ -10,6 +10,7 @@ typedef struct {
   InterruptHandler memoryManagementFault;
   InterruptHandler busFault;
   InterruptHandler usageFault;
+  // TODO: do we need placeholder fields for these?
   // 7..10
   InterruptHandler svCall;
   // 12..13
@@ -26,8 +27,7 @@ void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
 extern uint32_t __StackTop;
 
 /* Locate the vector table at the root of flash */
-static const __attribute__((section(".isr_vector"))) __attribute__((used));
-static VectorTable const vectorTable = {
+static VectorTable const vectorTable __attribute__((section(".isr_vector"), used)) = {
     .stackPointer = &__StackTop,
     .resetHandler = Reset_Handler,
     .sysTick = SysTick_Handler,
