@@ -1,4 +1,4 @@
-{.compile: "vector_table.c".}
+{.compile: "start.c".}
 
 proc main()
 

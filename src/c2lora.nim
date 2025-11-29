@@ -13,12 +13,12 @@ proc delay(t: int) =
       dec x
 
 proc main() =
-  const ledPinNum = 4
-  const ledPinBit = 1'u32 shl ledPinNum
-  P1.DIRSET = ledPinBit
+  const greenPinBit = 1'u32 shl 3
+  const bluePinBit = 1'u32 shl 4
+  P1.DIRSET = greenPinBit or bluePinBit
   while true:
-    P1.OUTSET = ledPinBit
-    delay(1000)
+    P1.OUTSET = greenPinBit or bluePinBit
+    #delay(100)
 
-    P1.OUTCLR = ledPinBit
-    delay(1000)
+    P1.OUTCLR = greenPinBit or bluePinBit
+    #delay(100)

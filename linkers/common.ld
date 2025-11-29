@@ -35,6 +35,7 @@ SECTIONS
 	.text :
 	{
 		KEEP(*(.isr_vector))
+		KEEP(*(.text.start))
 		*(.text*)
 
 		KEEP(*(.init))
