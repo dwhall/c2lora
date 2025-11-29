@@ -63,8 +63,8 @@ void sysTick_Handler(void) __attribute__((weak, alias("default_Handler")));
 */
 extern uint32_t __StackTop;
 
-/* Locate the vector table where the linker says to (.isr_vector).
-   The used attribute is so the optimizer doesn't remove this struct
+/* The section attribute locates the vector table at the linker symbol, .isr_vector
+   The used attribute prevents the optimizer from removing this struct
    that is not referred to by any other variable.
 */
 static VectorTable const vectorTable __attribute__((section(".isr_vector"), used)) = {
