@@ -47,7 +47,7 @@ static void reserved_Handler(void) {
    user-defined function with the same name. The alias attribute causes
    the function to be an alias for default_Handler if not overridden.
 */
-void reset_Handler(void) __attribute__((weak, alias("default_Handler")));
+void Reset_Handler(void) __attribute__((weak, alias("default_Handler")));
 void nmi_Handler(void) __attribute__((weak, alias("default_Handler")));
 void hard_Fault(void) __attribute__((weak, alias("default_Handler")));
 void memMgmt_Fault(void) __attribute__((weak, alias("default_Handler")));
@@ -69,7 +69,7 @@ extern uint32_t __StackTop;
 */
 static VectorTable const vectorTable __attribute__((section(".isr_vector"), used)) = {
     .stackPointer = &__StackTop,
-    .resetHandler = reset_Handler,
+    .resetHandler = Reset_Handler,
     .nonMaskableInterrupt = nmi_Handler,
     .hardFault = hard_Fault,
     .memMgmtFault = memMgmt_Fault,

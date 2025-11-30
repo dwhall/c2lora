@@ -8,7 +8,7 @@ proc delay(t: int) =
   var n = t
   while n > 0:
     dec n
-    var x {.volatile.} = 500
+    var x {.volatile.} = 1000
     while x > 0:
       dec x
 
@@ -18,7 +18,6 @@ proc main() =
   P1.DIRSET = greenPinBit or bluePinBit
   while true:
     P1.OUTSET = greenPinBit or bluePinBit
-    #delay(100)
-
+    delay(1000)
     P1.OUTCLR = greenPinBit or bluePinBit
-    #delay(100)
+    delay(1000)
