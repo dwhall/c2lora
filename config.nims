@@ -19,7 +19,6 @@ switch("nimcache", "build/nimcache")
 
 # Optimization
 switch("opt", "size")
-switch("passL","-nostdlib")
 
 switch("noMain")
 

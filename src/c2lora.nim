@@ -2,28 +2,49 @@
 
 import nrf52840 / p
 
+const
+  STANDARD_DELAY  = 1000
+  LONG_DELAY      = 5000
 
-# Forward declaration
-proc NimMain() {.importc: "NimMain".}
+proc read_ipsr(): uint32 {.inline.} =
+  var registerValue: uint32
+  asm """
+    mrs %0, ipsr
+    : "=r"(`registerValue`)
+  """
+  return registerValue
 
+proc startDelay(ticks: int) {.inline, noSideEffect.} =
+  var outerTicks = ticks
 
-proc delay(t: int) =
-  var n = t
-  while n > 0:
-    dec n
-    var x {.volatile.} = 1000
-    while x > 0:
-      dec x
+  while outerTicks > 0:
+    dec outerTicks
+    var innerTicks {.volatile.} = STANDARD_DELAY
+    while innerTicks > 0:
+      dec innerTicks
+
+proc blink_LED(pinBit: uint32, delay: int) =
+  P1.OUTSET = pinBit
+  startDelay(delay)
+  P1.OUTCLR = pinBit
+  startDelay(delay)
+
+proc nim_default_handler() {.exportc: "nim_default_handler", noconv.} =
+  var ipsr: uint32 = read_ipsr()
+
+  # Blink Green LED based on IPSR value
+  const greenPinBit = 1'u32 shl 3 # P1.03/LED1/RAK19007 Green
+  P1.DIRSET = greenPinBit
+  while true:
+    for i in 0 ..< ipsr:
+      blink_LED(greenPinBit, STANDARD_DELAY)
+    startDelay(LONG_DELAY)
 
 proc main() =
-  const greenPinBit = 1'u32 shl 3 # P1.03/LED1/RAK19007 Green
   const bluePinBit = 1'u32 shl 4  # P1.04/LED2/RAK19007 Blue
-  P1.DIRSET = greenPinBit or bluePinBit
+  P1.DIRSET = bluePinBit
   while true:
-    P1.OUTSET = greenPinBit or bluePinBit
-    delay(1000)
-    P1.OUTCLR = greenPinBit or bluePinBit
-    delay(1000)
+    blink_LED(bluePinBit, STANDARD_DELAY)
 
 proc Reset_Handler() {.exportc, noconv.} =
   #NimMain()  # FIXME: unmet dependencies

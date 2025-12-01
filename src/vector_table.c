@@ -16,12 +16,13 @@ typedef struct
     ExternalIrqHandler externalIrq[48]; /* 16..63 */
 } VectorTable;
 
-/* The default handler for an exception.
-   This notifies the programmer that the exception occurred.
-   The programmer should provide a proper handler */
-static void default_Handler(void) {
-    // TODO: clear flag, debugAssert, return
-    for (;;);
+extern void nim_default_handler(void) __attribute__((weak));
+
+void default_Handler(void) {
+    if (nim_default_handler) {
+        nim_default_handler();
+    }
+    for(;;);
 }
 
 /* A reserved exception should never happened */
