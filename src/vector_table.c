@@ -48,14 +48,14 @@ static void reserved_Handler(void) {
    the function to be an alias for default_Handler if not overridden.
 */
 void Reset_Handler(void) __attribute__((weak, alias("default_Handler")));
-void nmi_Handler(void) __attribute__((weak, alias("default_Handler")));
-void hard_Fault(void) __attribute__((weak, alias("default_Handler")));
-void memMgmt_Fault(void) __attribute__((weak, alias("default_Handler")));
-void bus_Fault(void) __attribute__((weak, alias("default_Handler")));
-void usageFault_Handler(void) __attribute__((weak, alias("default_Handler")));
-void svCall_Handler(void) __attribute__((weak, alias("default_Handler")));
-void debugMonitor_Handler(void) __attribute__((weak, alias("default_Handler")));
-void pendSv_Handler(void) __attribute__((weak, alias("default_Handler")));
+void NMI_Handler(void) __attribute__((weak, alias("default_Handler")));
+void HardFault_Handler(void) __attribute__((weak, alias("default_Handler")));
+void MemoryManagement_Handler(void) __attribute__((weak, alias("default_Handler")));
+void BusFault_Handler(void) __attribute__((weak, alias("default_Handler")));
+void UsageFault_Handler(void) __attribute__((weak, alias("default_Handler")));
+void SVC_Handler(void) __attribute__((weak, alias("default_Handler")));
+void DebugMon_Handler(void) __attribute__((weak, alias("default_Handler")));
+void PendSV_Handler(void) __attribute__((weak, alias("default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("default_Handler")));
 
 /* The linker script provides this symbol.  The stack is located at or
@@ -70,18 +70,18 @@ extern uint32_t __StackTop;
 static VectorTable const vectorTable __attribute__((section(".isr_vector"), used)) = {
     .stackPointer = &__StackTop,
     .resetHandler = Reset_Handler,
-    .nonMaskableInterrupt = nmi_Handler,
-    .hardFault = hard_Fault,
-    .memMgmtFault = memMgmt_Fault,
-    .busFault = bus_Fault,
-    .usageFault = usageFault_Handler,
+    .nonMaskableInterrupt = NMI_Handler,
+    .hardFault = HardFault_Handler,
+    .memMgmtFault = MemoryManagement_Handler,
+    .busFault = BusFault_Handler,
+    .usageFault = UsageFault_Handler,
     .reserved7 = reserved_Handler,
     .reserved8 = reserved_Handler,
     .reserved9 = reserved_Handler,
     .reserved10 = reserved_Handler,
-    .svCall = svCall_Handler,
-    .debugMonitor = debugMonitor_Handler,
+    .svCall = SVC_Handler,
+    .debugMonitor = DebugMon_Handler,
     .reserved13 = reserved_Handler,
-    .pendSV = pendSv_Handler,
+    .pendSV = PendSV_Handler,
     .sysTick = SysTick_Handler,
 };
