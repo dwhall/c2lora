@@ -1,6 +1,6 @@
 {.compile: "vector_table.c".}
 
-import p
+import nrf52840 / p
 
 
 # Forward declaration
