@@ -7,3 +7,7 @@
 [submodule "deps/uf2"]
 	path = deps/uf2
 	url = https://github.com/microsoft/uf2.git
+[submodule "deps/arm_cores"]
+	path = deps/arm_cores
+	url = git@github.com:dwhall/arm_cores.git
+	branch = main
