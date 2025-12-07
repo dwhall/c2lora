@@ -16,79 +16,68 @@ typedef struct
     ExternalIrqHandler externalIrq[48]; /* 16..63 */
 } VectorTable;
 
-extern void nim_default_handler(void) __attribute__((weak));
-
-void default_Handler(void) {
-    if (nim_default_handler) {
-        nim_default_handler();
-    }
-    for(;;);
-}
-
 /* A reserved exception should never happened */
 static void reserved_Handler(void) {
     /* Stay here so a debugger will reveal the problem */
     for(;;);
 }
 
-/* The weak attribute allows the function to be overridden by a
-   user-defined function with the same name. The alias attribute causes
-   the function to be an alias for default_Handler if not overridden.
+/* These functions should be defined in nim as needed and are aliased to
+   default_Handler if not defined
 */
-void Reset_Handler(void) __attribute__((weak, alias("default_Handler")));
-void NMI_Handler(void) __attribute__((weak, alias("default_Handler")));
-void HardFault_Handler(void) __attribute__((weak, alias("default_Handler")));
-void MemoryManagement_Handler(void) __attribute__((weak, alias("default_Handler")));
-void BusFault_Handler(void) __attribute__((weak, alias("default_Handler")));
-void UsageFault_Handler(void) __attribute__((weak, alias("default_Handler")));
-void SVC_Handler(void) __attribute__((weak, alias("default_Handler")));
-void DebugMon_Handler(void) __attribute__((weak, alias("default_Handler")));
-void PendSV_Handler(void) __attribute__((weak, alias("default_Handler")));
-void SysTick_Handler(void) __attribute__((weak, alias("default_Handler")));
-
-void POWER_CLOCK_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void RADIO_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void UARTE0_UART0_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SPIM0_SPIS0_TWIM0_TWIS0_SPI0_TWI0_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void NFCT_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void GPIOTE_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SAADC_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void TIMER0_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void TIMER1_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void TIMER2_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void RTC0_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void TEMP_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void RNG_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void ECB_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void CCM_AAR_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void WDT_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void RTC1_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void QDEC_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void COMP_LPCOMP_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SWI0_EGU0_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SWI1_EGU1_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SWI2_EGU2_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SWI3_EGU3_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SWI4_EGU4_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SWI5_EGU5_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void TIMER3_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void TIMER4_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void PWM0_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void PDM_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void MWU_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void PWM1_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void PWM2_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SPIM2_SPIS2_SPI2_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void RTC2_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void I2S_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void FPU_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void USBD_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void UARTE1_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void QSPI_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void CRYPTOCELL_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void PWM3_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
-void SPIM3_IRQHandler(void) __attribute__((weak, alias("default_Handler")));
+void Reset_Handler(void);
+void NMI_Handler(void);
+void HardFault_Handler(void);
+void MemoryManagement_Handler(void);
+void BusFault_Handler(void);
+void UsageFault_Handler(void);
+void SVC_Handler(void);
+void DebugMon_Handler(void);
+void PendSV_Handler(void);
+void SysTick_Handler(void);
+void POWER_CLOCK_IRQHandler(void);
+void RADIO_IRQHandler(void);
+void UARTE0_UART0_IRQHandler(void);
+void SPIM0_SPIS0_TWIM0_TWIS0_SPI0_TWI0_IRQHandler(void);
+void SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1_IRQHandler(void);
+void NFCT_IRQHandler(void);
+void GPIOTE_IRQHandler(void);
+void SAADC_IRQHandler(void);
+void TIMER0_IRQHandler(void);
+void TIMER1_IRQHandler(void);
+void TIMER2_IRQHandler(void);
+void RTC0_IRQHandler(void);
+void TEMP_IRQHandler(void);
+void RNG_IRQHandler(void);
+void ECB_IRQHandler(void);
+void CCM_AAR_IRQHandler(void);
+void WDT_IRQHandler(void);
+void RTC1_IRQHandler(void);
+void QDEC_IRQHandler(void);
+void COMP_LPCOMP_IRQHandler(void);
+void SWI0_EGU0_IRQHandler(void);
+void SWI1_EGU1_IRQHandler(void);
+void SWI2_EGU2_IRQHandler(void);
+void SWI3_EGU3_IRQHandler(void);
+void SWI4_EGU4_IRQHandler(void);
+void SWI5_EGU5_IRQHandler(void);
+void TIMER3_IRQHandler(void);
+void TIMER4_IRQHandler(void);
+void PWM0_IRQHandler(void);
+void PDM_IRQHandler(void);
+void MWU_IRQHandler(void);
+void PWM1_IRQHandler(void);
+void PWM2_IRQHandler(void);
+void SPIM2_SPIS2_SPI2_IRQHandler(void);
+void RTC2_IRQHandler(void);
+void I2S_IRQHandler(void);
+void FPU_IRQHandler(void);
+void USBD_IRQHandler(void);
+void UARTE1_IRQHandler(void);
+void QSPI_IRQHandler(void);
+void CRYPTOCELL_IRQHandler(void);
+void PWM3_IRQHandler(void);
+void SPIM3_IRQHandler(void);
 
 /* The linker script provides this symbol.  The stack is located at or
    near the greatest-valued address in RAM and grows toward lesser values.

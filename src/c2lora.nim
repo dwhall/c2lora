@@ -34,7 +34,7 @@ proc blink_LED(pinBit: static uint32, delay: int) =
   P1.OUTCLR = pinBit
   startDelay(delay)
 
-proc nim_default_handler() {.exportc: "nim_default_handler", noconv.} =
+proc default_Handler() {.exportc, noconv.} =
   var ipsr: uint32 = read_ipsr()
 
   # Blink Green LED based on IPSR value
@@ -60,3 +60,4 @@ proc Reset_Handler() {.exportc, noconv.} =
   NimMain()
   main()
   while true: discard
+

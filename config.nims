@@ -71,8 +71,8 @@ task build, "Build the project":
     pathFlags.add(" --path:" & dep.parentDir())
 
   # Build main project
-  exec "nim c --skipProjCfg" & pathFlags & " --gcc.exe:arm-none-eabi-gcc" &
-       " --gcc.linkerexe:arm-none-eabi-gcc " & srcDir / bin[0] & ".nim"
+  exec "nim c" & pathFlags & " --arm.any.gcc.exe:arm-none-eabi-gcc" &
+       " --arm.any.gcc.linkerexe:arm-none-eabi-gcc " & srcDir / bin[0] & ".nim"
 
   # Post-build steps
   let buildPath = binDir / bin[0]
