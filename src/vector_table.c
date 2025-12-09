@@ -22,8 +22,9 @@ static void reserved_Handler(void) {
     for(;;);
 }
 
-/* These functions should be defined in nim as needed and are aliased to
-   default_Handler if not defined
+/* These functions are aliased to default_Handler in nrf52.ld
+   and may be overridden in nim as needed.
+   Be sure to use the pragma: {.exportc, noconv.}
 */
 void Reset_Handler(void);
 void NMI_Handler(void);

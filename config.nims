@@ -1,15 +1,9 @@
 mode = ScriptMode.Verbose
 
-version       = "0.1.0"
-author        = "Dean"
-description   = "Codec 2 over LoRa"
-license       = "MIT"
-srcDir        = "src"
-binDir        = "build"
-bin           = @["c2lora"]
-
-# Dependencies
-requires "nim >= 2.2.0"
+const
+  target = "c2lora"
+  binDir = "build"
+  srcDir = "src"
 
 # Compiler options
 switch("arm.any.gcc.options.always", "-w -fmax-errors=4 -march=armv7e-m -mtune=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections")
@@ -27,6 +21,7 @@ switch("opt", "size")
 # Nim-compiler options:
 switch("os", "any")
 switch("cpu", "arm")
+switch("cc", "gcc")
 switch("mm", "arc")
 switch("panics", "on")  # requires local panicoverride.nim
 switch("threads", "off")
@@ -56,12 +51,10 @@ switch("styleCheck", "error")
 
 import std/os
 
-# Build dependencies
 let buildDeps = [
   "deps" / "svd" / "build.nims"
 ]
 
-# Build task
 task build, "Build the project":
   var pathFlags = ""
 
@@ -72,10 +65,10 @@ task build, "Build the project":
 
   # Build main project
   exec "nim c" & pathFlags & " --arm.any.gcc.exe:arm-none-eabi-gcc" &
-       " --arm.any.gcc.linkerexe:arm-none-eabi-gcc " & srcDir / bin[0] & ".nim"
+       " --arm.any.gcc.linkerexe:arm-none-eabi-gcc " & srcDir / target & ".nim"
 
   # Post-build steps
-  let buildPath = binDir / bin[0]
+  let buildPath = binDir / target
   exec "arm-none-eabi-objcopy -O binary " & buildPath & ".elf " & buildPath &
        ".bin"
 
@@ -85,6 +78,11 @@ task build, "Build the project":
   exec "python3 deps/uf2/utils/uf2conv.py --base 0x26000 --family NRF52840 " &
        buildPath & ".bin --output " & buildPath & ".uf2 --convert"
 
-# Clean task
 task clean, "Clean build artifacts":
   rmDir(binDir)
+
+task load, "Load UF2 file to the device":
+  let uf2Path = binDir / target & ".uf2"
+  if not fileExists(uf2Path):
+    quit("UF2 file not found. Please build the project first.")
+  exec "python3 deps/uf2/utils/uf2conv.py --deploy " & uf2Path

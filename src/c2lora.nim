@@ -1,63 +1,50 @@
-{.compile: "vector_table.c".}
-{.compile: "stubs.c".}
-{.compile: "section_init.c".}
-import nrf52840 / p
-
-proc NimMain() {.importc: "NimMain".}
-proc copyDataSection() {.importc, cdecl.}
-proc zeroBssSection() {.importc, cdecl.}
+import nrf52840/p
+import reset
 
 const
-  STANDARD_DELAY  = 1000
-  LONG_DELAY      = 5000
-  BLUE_PIN_BIT    = 1'u32 shl 4  # P1.04/LED2/RAK19007 Blue
-  GREEN_PIN_BIT   = 1'u32 shl 3 # P1.03/LED1/RAK19007 Green
+  standardDelay = 1000
+  longDelay = 5000
+  bluePinBit = 1'u32 shl 4 # P1.04/LED2/RAK19007 Blue
+  greenPinBit = 1'u32 shl 3 # P1.03/LED1/RAK19007 Green
 
-proc read_ipsr(): uint32 {.inline.} =
+proc readIpsr(): uint32 {.inline.} =
   asm """
     mrs %0, ipsr
     : "=r"(`result`)
   """
 
-proc startDelay(ticks: int) {.inline, noSideEffect.} =
+func waitBlocking(ticks: int) =
   var outerTicks = ticks
-
   while outerTicks > 0:
     dec outerTicks
-    var innerTicks {.volatile.} = STANDARD_DELAY
+    var innerTicks {.volatile.} = standardDelay
     while innerTicks > 0:
       dec innerTicks
 
-proc blink_LED(pinBit: static uint32, delay: int) =
+proc blinkLed(pinBit: static uint32, delay: int) =
   P1.OUTSET = pinBit
-  startDelay(delay)
+  waitBlocking(delay)
   P1.OUTCLR = pinBit
-  startDelay(delay)
+  waitBlocking(delay)
 
 proc default_Handler() {.exportc, noconv.} =
-  var ipsr: uint32 = read_ipsr()
-
-  # Blink Green LED based on IPSR value
-  P1.DIRSET = GREEN_PIN_BIT
+  ## Blinks green LED based on IPSR value
+  let ipsr = readIpsr()
+  P1.DIRSET = greenPinBit
   while true:
     for i in 0 ..< ipsr:
-      blink_LED(GREEN_PIN_BIT, STANDARD_DELAY)
-    startDelay(LONG_DELAY)
+      blinkLed(greenPinBit, standardDelay)
+    waitBlocking(longDelay)
 
 proc main() =
-  P1.DIRSET = BLUE_PIN_BIT
+  P1.DIRSET = bluePinBit
   var s = @[1, 2, 3]
   while true:
     # Blink Blue LED based on length of s to prove dynamic memory works
-    for _ in 0..<s.len:
-      blink_LED(BLUE_PIN_BIT, STANDARD_DELAY)
-    startDelay(LONG_DELAY)
+    for _ in 0 ..< s.len:
+      blinkLed(bluePinBit, standardDelay)
+    waitBlocking(longDelay)
     s.add(5)
 
-proc Reset_Handler() {.exportc, noconv.} =
-  copyDataSection()
-  zeroBssSection()
-  NimMain()
+when isMainModule:
   main()
-  while true: discard
-
