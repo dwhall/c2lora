@@ -7,10 +7,17 @@ const
   bluePinBit = 1'u32 shl 4 # P1.04/LED2/RAK19007 Blue
   greenPinBit = 1'u32 shl 3 # P1.03/LED1/RAK19007 Green
 
+var blink {.volatile.}: bool = false
+
 proc readIpsr(): uint32 {.inline.} =
   asm """
     mrs %0, ipsr
     : "=r"(`result`)
+  """
+
+proc waitForInterrupt() {.inline.} =
+  asm """
+    wfi
   """
 
 func waitBlocking(ticks: int) =
@@ -30,21 +37,20 @@ proc blinkLed(pinBit: static uint32, delay: int) =
 proc default_Handler() {.exportc, noconv.} =
   ## Blinks green LED based on IPSR value
   let ipsr = readIpsr()
-  P1.DIRSET = greenPinBit
-  while true:
-    for i in 0 ..< ipsr:
-      blinkLed(greenPinBit, standardDelay)
-    waitBlocking(longDelay)
+  waitForInterrupt()
+
+proc SysTick_Handler() {.exportc, noconv.} =
+  P1.DIRSET = bluePinBit
+  blink = not blink;
+  if blink:
+    P1.OUTSET = bluePinBit
+  else:
+    P1.OUTCLR = bluePinBit
+
+  waitForInterrupt()
 
 proc main() =
-  P1.DIRSET = bluePinBit
-  var s = @[1, 2, 3]
-  while true:
-    # Blink Blue LED based on length of s to prove dynamic memory works
-    for _ in 0 ..< s.len:
-      blinkLed(bluePinBit, standardDelay)
-    waitBlocking(longDelay)
-    s.add(5)
+  waitForInterrupt()
 
 when isMainModule:
   main()
