@@ -1,5 +1,6 @@
-import cm4f/systick
 import nrf52840/p
+import nrf52840/timer
+import cm4f/nvic
 import reset
 
 const
@@ -49,20 +50,26 @@ proc waitForInterrupt() {.inline.} =
     wfi
   """
 
-proc configureSystick100ms() =
-  SYSTICK.SYST_CSR = 0'u32
-  var cal = SYSTICK.SYST_CALIB.TENMS.uint32
-  if cal == 0'u32:
-    cal = 6_400_000'u32 - 1'u32
-  SYSTICK.SYST_RVR = cal
-  SYSTICK.SYST_CVR = 0'u32
-  SYSTICK.SYST_CSR
-         .CLKSOURCE(1)
-         .TICKINT(1)
-         .ENABLE(1)
-         .write()
+proc configureNRFTimer100ms() =
+  # Reference:
+  # https://docs.nordicsemi.com/bundle/ps_nrf52840/page/timer.html
 
-proc SysTick_Handler() {.exportc, noconv.} =
+  TIMER0.TASKS_STOP  = 1
+  TIMER0.TASKS_CLEAR = 1
+
+  TIMER0.MODE        = 0
+  TIMER0.BITMODE     = 2 # 24 Bit mode
+  TIMER0.PRESCALER   = 4 # 1MHz timer frequency (Cutoff for timer using PCLK1M instead of PCLK16M)
+
+  TIMER0.SHORTS      = 1 shl 0 # COMPARE0_CLEAR
+  TIMER0.CC0         = 100000;
+
+  TIMER0.INTENSET = 1 shl 16  # COMPARE0 interrupt enable
+  NVIC.NVIC_ISER_0 = 1 shl 8 # Enable TIMER0 interrupt in NVIC
+
+  TIMER0.TASKS_START = 1
+
+proc TIMER0_IRQHandler() {.exportc, noconv.} =
   var ledState {.global, volatile.} = false
   ledState = not ledState
   if ledState:
@@ -72,7 +79,7 @@ proc SysTick_Handler() {.exportc, noconv.} =
 
 proc main() =
   P1.DIRSET = bluePinBit
-  configureSystick100ms()
+  configureNRFTimer100ms()
   while true:
     waitForInterrupt()
 
