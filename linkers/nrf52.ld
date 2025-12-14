@@ -10,11 +10,11 @@ MEMORY
 INCLUDE "/common.ld"
 
 PROVIDE(Reset_Handler = default_Handler);
-PROVIDE(NMI_Handler = default_Handler);
-PROVIDE(HardFault_Handler = default_Handler);
-PROVIDE(MemoryManagement_Handler = default_Handler);
-PROVIDE(BusFault_Handler = default_Handler);
-PROVIDE(UsageFault_Handler = default_Handler);
+PROVIDE(NMI_Handler = fault_Handler);
+PROVIDE(HardFault_Handler = fault_Handler);
+PROVIDE(MemoryManagement_Handler = fault_Handler);
+PROVIDE(BusFault_Handler = fault_Handler);
+PROVIDE(UsageFault_Handler = fault_Handler);
 PROVIDE(SVC_Handler = default_Handler);
 PROVIDE(DebugMon_Handler = default_Handler);
 PROVIDE(PendSV_Handler = default_Handler);
