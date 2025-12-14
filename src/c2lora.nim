@@ -4,6 +4,7 @@ import reset, hard_fault
 
 const
   bluePinBit = 1'u32 shl 4 # P1.04/LED2/RAK19007 Blue
+  timer0Bit = 1'u32 shl irqTIMER0 # TIMER0 interrupt bit in NVIC
 
 proc default_Handler() {.exportc, noconv.} =
   # TODO: clear interrupt
@@ -29,7 +30,7 @@ proc configureNRFTimer100ms() =
   TIMER0.CC0         = 100000;
 
   TIMER0.INTENSET = 1 shl 16  # COMPARE0 interrupt enable
-  NVIC.NVIC_ISER_0 = 1 shl 8 # Enable TIMER0 interrupt in NVIC
+  NVIC.NVIC_ISER_0 = timer0Bit # Enable TIMER0 interrupt in NVIC
 
   TIMER0.TASKS_START = 1
 
@@ -40,6 +41,7 @@ proc TIMER0_IRQHandler() {.exportc, noconv.} =
     P1.OUTSET = bluePinBit
   else:
     P1.OUTCLR = bluePinBit
+  NVIC.NVIC_ICPR_0 = timer0Bit # Clear TIMER0 interrupt in NVIC
 
 proc main() =
   P1.DIRSET = bluePinBit
