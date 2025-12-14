@@ -1,10 +1,11 @@
-import nrf52840/[p, timer]
+import nrf52840/[p, clock, rtc]
 import cm4f/nvic
 import reset, hard_fault
 
 const
   bluePinBit = 1'u32 shl 4 # P1.04/LED2/RAK19007 Blue
-  timer0Bit = 1'u32 shl irqTIMER0 # TIMER0 interrupt bit in NVIC
+  rtc1Bit = 1'u32 shl 17  # RTC1 interrupt bit in NVIC_ISER_0
+  rtc_interval = 3277'u32 # ~100 ms
 
 proc default_Handler() {.exportc, noconv.} =
   # TODO: clear interrupt
@@ -15,37 +16,46 @@ proc waitForInterrupt() {.inline.} =
     wfi
   """
 
-proc configureNRFTimer100ms() =
-  # Reference:
-  # https://docs.nordicsemi.com/bundle/ps_nrf52840/page/timer.html
+proc configureRTC1() =
+  # Start the low-frequency clock (LFCLK)
+  # Source: Internal RC oscillator (0) or external 32.768 kHz crystal (1)
+  CLOCK.TASKS_LFCLKSTOP = 1
+  CLOCK.LFCLKSRC = 0
+  CLOCK.TASKS_LFCLKSTART = 1
 
-  TIMER0.TASKS_STOP  = 1
-  TIMER0.TASKS_CLEAR = 1
+  # Wait for LFCLK to start
+  while CLOCK.EVENTS_LFCLKSTARTED.uint32 == 0:
+    discard
+  CLOCK.EVENTS_LFCLKSTARTED = 0
 
-  TIMER0.MODE        = 0
-  TIMER0.BITMODE     = 2 # 24 Bit mode
-  TIMER0.PRESCALER   = 4 # 1MHz timer frequency (Cutoff for timer using PCLK1M instead of PCLK16M)
+  RTC1.TASKS_STOP = 1           # Stop RTC
+  RTC1.TASKS_CLEAR = 1          # Clear counter
+  RTC1.PRESCALER = 0            # No prescaling: 32.768 kHz / (PRESCALER + 1)
 
-  TIMER0.SHORTS      = 1 shl 0 # COMPARE0_CLEAR
-  TIMER0.CC0         = 100000;
+  RTC1.CC0 = rtc_interval       # 3277 ticks ≈ 100ms at 32.768 kHz
+  RTC1.INTENSET = 1 shl 16      # Bit 16 = COMPARE[0] interrupt
 
-  TIMER0.INTENSET = 1 shl 16  # COMPARE0 interrupt enable
-  NVIC.NVIC_ISER_0 = timer0Bit # Enable TIMER0 interrupt in NVIC
+  # Enable RTC1 interrupt in NVIC (IRQ #17)
+  NVIC.NVIC_ISER_0 = NVIC.NVIC_ISER_0.uint32 or rtc1Bit
 
-  TIMER0.TASKS_START = 1
+  # Start RTC
+  RTC1.TASKS_START = 1
 
-proc TIMER0_IRQHandler() {.exportc, noconv.} =
-  var ledState {.global, volatile.} = false
-  ledState = not ledState
-  if ledState:
-    P1.OUTSET = bluePinBit
-  else:
-    P1.OUTCLR = bluePinBit
-  NVIC.NVIC_ICPR_0 = timer0Bit # Clear TIMER0 interrupt in NVIC
+proc RTC1_IRQHandler() {.exportc, noconv.} =
+  if RTC1.EVENTS_COMPARE0.uint32 != 0:
+    RTC1.EVENTS_COMPARE0 = 0
+    RTC1.CC0 = RTC1.CC0.uint32 + rtc_interval
+
+    var ledState {.global, volatile.} = false
+    ledState = not ledState
+    if ledState:
+      P1.OUTSET = bluePinBit
+    else:
+      P1.OUTCLR = bluePinBit
 
 proc main() =
   P1.DIRSET = bluePinBit
-  configureNRFTimer100ms()
+  configureRTC1()
   while true:
     waitForInterrupt()
 
