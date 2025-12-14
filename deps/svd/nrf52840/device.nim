@@ -4,4 +4,5 @@
 import metagenerator
 
 #!fmt: off
-declareDevice(deviceName = nrf52840, mpuPresent = true, fpuPresent = true, nvicPrioBits = 3)
+declareDevice(deviceName = nrf52840, svdFileVersion = "1", description = "nRF52840 reference description for radio MCU with ARM 32-bit Cortex-M4 Microcontroller ")
+declareCpu(cpuName = CM4, revision = "r0p1", endian = "little", mpuPresent = true, fpuPresent = true, nvicPrioBits = 3, vendorSysTick = 0)

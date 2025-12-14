@@ -17,9 +17,8 @@ Codec 2 over LoRa, written in Nim.
 
 _BE SURE TO INIT AND UPDATE SUBMODULES_
 
-* Build: `nimble build --skipCfg`
+* Build: `nim build`
+* Load: `nim load`
 * Tests: `nimble test` (none at the moment)
 
 ## Releases
-
-None

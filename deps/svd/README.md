@@ -1,7 +1,9 @@
 # SVD
 
-An SVD file, which is XML format, describes an Arm processor, peripherals and registers.
-A tool parses the file and renders source code that can manipulate the peripherals,
+An SVD file, which is XML format, describes the peripherals and registers of
+an Arm processor implementation by a silicon manufacturer.
+A proper SVD file does NOT give access to the ARM core registers.
+A tool parses the `.svd` file and renders source code that can manipulate the peripherals,
 registers and fields by name.
 
 The SVD file included in this directory comes from the Nordic Semi
