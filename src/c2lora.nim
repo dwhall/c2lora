@@ -6,6 +6,7 @@ const
   bluePinBit = 1'u32 shl 4 # P1.04/LED2/RAK19007 Blue
   rtc1Bit = 1'u32 shl 17  # RTC1 interrupt bit in NVIC_ISER_0
   rtc_interval = 3277'u32 # ~100 ms
+  isrAttr = "__attribute__((__interrupt__)) $# $#$#"
 
 proc default_Handler() {.exportc, noconv.} =
   # TODO: clear interrupt
@@ -31,27 +32,29 @@ proc configureRTC1() =
   RTC1.TASKS_STOP = 1           # Stop RTC
   RTC1.TASKS_CLEAR = 1          # Clear counter
   RTC1.PRESCALER = 0            # No prescaling: 32.768 kHz / (PRESCALER + 1)
-
   RTC1.CC0 = rtc_interval       # 3277 ticks ≈ 100ms at 32.768 kHz
-  RTC1.INTENSET = 1 shl 16      # Bit 16 = COMPARE[0] interrupt
 
-  # Enable RTC1 interrupt in NVIC (IRQ #17)
-  NVIC.NVIC_ISER_0 = NVIC.NVIC_ISER_0.uint32 or rtc1Bit
+  RTC1.INTENSET.COMPARE0(1).write() # Enable interrupt upon COMPARE[0]
+  NVIC.NVIC_ISER_0.SETENA_17(1).write() # Enable interrupt on irq17/RTC1
 
-  # Start RTC
   RTC1.TASKS_START = 1
 
-proc RTC1_IRQHandler() {.exportc, noconv.} =
-  if RTC1.EVENTS_COMPARE0.uint32 != 0:
-    RTC1.EVENTS_COMPARE0 = 0
-    RTC1.CC0 = RTC1.CC0.uint32 + rtc_interval
-
+proc toggleBlueLed =
     var ledState {.global, volatile.} = false
     ledState = not ledState
     if ledState:
       P1.OUTSET = bluePinBit
     else:
       P1.OUTCLR = bluePinBit
+
+proc RTC1_IRQHandler() {.exportc, noconv, codegenDecl:isrAttr.} =
+  if RTC1.EVENTS_COMPARE0.uint32 != 0:
+    RTC1.EVENTS_COMPARE0 = 0
+    RTC1.CC0 = RTC1.CC0.uint32 + rtc_interval
+    toggleBlueLed()
+    NVIC.NVIC_ICPR_0 = rtc1Bit # Clear pending irq17/RTC1
+    while RTC1.EVENTS_COMPARE0.uint32 != 0:
+      discard # wait for event to clear
 
 proc main() =
   P1.DIRSET = bluePinBit
