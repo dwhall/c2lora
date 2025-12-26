@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "BMP nRF52",
+      "type": "cortex-debug", // Requires Cortex-Debug extension (marus25.cortex-debug)
+      "request": "launch",
+
+      "servertype": "external",
+      "gdbTarget": "COM5", // Adjust this to your BMP's COM port
+
+      "executable": "${workspaceFolder}/build/c2lora.elf",
+      "device": "nRF52",
+      "interface": "swd",
+
+      "runToEntryPoint": "Reset_Handler",
+      "svdFile": "${workspaceFolder}deps/svd/nrf52840.svd",
+
+      "gdbPath": "arm-none-eabi-gdb",
+      //"showDevDebugOutput": "raw",
+
+      "overrideLaunchCommands": [
+        "file build/c2lora.elf",
+        "monitor swd_scan",
+        "attach 1",
+        "load"
+      ]
+    }
+  ]
+}

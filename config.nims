@@ -16,7 +16,7 @@ switch("arm.any.gcc.options.linker", "-w -march=armv7e-m -mthumb -mfloat-abi=har
 switch("nimcache", "build/nimcache")
 
 # Optimization
-switch("opt", "size")
+switch("opt", "size") # Comment out for debugging
 
 # Nim-compiler options:
 switch("os", "any")
@@ -43,6 +43,8 @@ switch("define", "nimMemAlignTiny")
 
 # Debugging
 # switch("debugger", "native")
+# switch("debuginfo", "on")
+# switch("lineDir", "on")
 # switch("passL", "-Wl,-Map=build/c2lora.map")
 
 # Preferences
