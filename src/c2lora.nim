@@ -1,6 +1,7 @@
 import nrf52840/[p, clock, rtc]
 import cm4f/nvic
 import reset, hard_fault
+import debug_rtt
 
 const
   bluePinBit = 1'u32 shl 4 # P1.04/LED2/RAK19007 Blue
@@ -58,6 +59,8 @@ proc RTC1_IRQHandler() {.exportc, noconv, codegenDecl:isrAttr.} =
       discard # wait for event to clear
 
 proc main() =
+  discard debugRTTwriteStr(0, "Hello from Nim!\n")
+  debugRTTprintf(0, "Counter: %d\n", 42)
   P1.DIRSET = bluePinBit
   configureRTC1()
   while true:
