@@ -16,7 +16,8 @@ switch("arm.any.gcc.options.linker", "-w -march=armv7e-m -mthumb -mfloat-abi=har
 switch("nimcache", "build/nimcache")
 
 # Optimization
-switch("opt", "size") # Comment out for debugging
+when defined(release):
+  switch("opt", "size")
 
 # Nim-compiler options:
 switch("os", "any")
@@ -42,9 +43,15 @@ switch("define", "nimMemAlignTiny")
 # switch("define", "nimPreviewSlimSystem")  # https://nim-lang.org/blog/2022/12/21/version-20-rc.html
 
 # Debugging
-# switch("debugger", "native")
-# switch("debuginfo", "on")
-# switch("lineDir", "on")
+when defined(debug):
+  switch("debugger", "native")
+  switch("debuginfo", "on")
+  switch("lineDir", "on")
+else:
+  switch("debugger", "off")
+  switch("debuginfo", "off")
+  switch("lineDir", "off")
+  switch("passL", "-Wl,--strip-debug")
 # switch("passL", "-Wl,-Map=build/c2lora.map")
 
 # Preferences
@@ -57,8 +64,19 @@ let buildDeps = [
   "deps" / "svd" / "build.nims"
 ]
 
-task build, "Build the project":
+task build, "Build the project (debug by default)":
+  let mode = if paramCount() > 1: paramStr(2) else: "debug"
+
   var pathFlags = ""
+  var modeFlags = ""
+
+  case mode
+  of "debug":
+    modeFlags = " -d:debug"
+  of "release":
+    modeFlags = " -d:release"
+  else:
+    quit("Unknown build mode: " & mode & " (use 'debug' or 'release')")
 
   # Build dependencies first
   for dep in buildDeps:
@@ -66,8 +84,10 @@ task build, "Build the project":
     pathFlags.add(" --path:" & dep.parentDir())
 
   # Build main project
-  exec "nim c" & pathFlags & " --arm.any.gcc.exe:arm-none-eabi-gcc" &
-       " --arm.any.gcc.linkerexe:arm-none-eabi-gcc " & srcDir / target & ".nim"
+  exec "nim c" & pathFlags & modeFlags &
+       " --arm.any.gcc.exe:arm-none-eabi-gcc" &
+       " --arm.any.gcc.linkerexe:arm-none-eabi-gcc " &
+       srcDir / target & ".nim"
 
   # Post-build steps
   let buildPath = binDir / target

@@ -48,6 +48,7 @@ proc toggleBlueLed =
       P1.OUTCLR = bluePinBit
 
 proc RTC1_IRQHandler() {.exportc, noconv, codegenDecl:isrAttr.} =
+  discard debugRTTwrite(0, "Hello from RTC1 IRQ!\n", 25)
   if RTC1.EVENTS_COMPARE0.uint32 != 0:
     RTC1.EVENTS_COMPARE0 = 0
     RTC1.CC0 = RTC1.CC0.uint32 + rtc_interval

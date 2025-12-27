@@ -11,3 +11,6 @@
 	path = deps/arm_cores
 	url = git@github.com:dwhall/arm_cores.git
 	branch = main
+[submodule "deps/RTT"]
+	path = deps/RTT
+	url = https://github.com/SEGGERMicro/RTT.git

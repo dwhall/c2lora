@@ -17,13 +17,19 @@
       "svdFile": "${workspaceFolder}deps/svd/nrf52840.svd",
 
       "gdbPath": "arm-none-eabi-gdb",
-      //"showDevDebugOutput": "raw",
 
       "overrideLaunchCommands": [
         "file build/c2lora.elf",
         "monitor swd_scan",
         "attach 1",
-        "load"
+        "load",
+        // For RTT support, install ms-vscode.vscode-serial-monitor extension
+        // and configure a serial monitor to connect to the RTT port (the COM
+        // port not used by the entended-remote connection)
+        "monitor rtt ram 0x20000000 0x20040000",
+        "monitor rtt channel 0",
+        "monitor rtt enable",
+        "monitor rtt cb"
       ]
     }
   ]
