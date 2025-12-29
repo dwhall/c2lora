@@ -10,8 +10,10 @@ proc NimMain() {.importc: "NimMain".}
 proc copyDataSection() {.importc, cdecl.}
 proc zeroBssSection() {.importc, cdecl.}
 
+let c_vectorTableAddress {.importc: "vectorTableAddress".}: cint
+
 proc Reset_Handler() {.exportc, noconv.} =
-  SCB.VTOR = 0x00026000
+  SCB.VTOR = c_vectorTableAddress.uint32
   copyDataSection()
   zeroBssSection()
   rttInit()

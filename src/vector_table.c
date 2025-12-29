@@ -159,3 +159,4 @@ static VectorTable const vectorTable __attribute__((section(".isr_vector"), used
         SPIM3_IRQHandler,     /* 63 */
     },
 };
+intptr_t const vectorTableAddress = (intptr_t)&vectorTable;
