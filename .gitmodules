@@ -14,3 +14,6 @@
 [submodule "deps/RTT"]
 	path = deps/RTT
 	url = https://github.com/SEGGERMicro/RTT.git
+[submodule "deps/krnl"]
+	path = deps/krnl
+	url = git@github.com:dwhall/krnl.git
