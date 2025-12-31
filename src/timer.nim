@@ -33,8 +33,7 @@ proc configureTimer*(interval: uint32, callback: proc()) =
 
   RTC1.TASKS_START = 1
 
-const isrAttr = "__attribute__((__interrupt__)) $# $#$#"
-proc RTC1_IRQHandler*() {.exportc, noconv, codegenDecl:isrAttr.} =
+proc RTC1_IRQHandler*() {.exportc, noconv.} =
   const rtc1Bit = 1'u32 shl 17  # RTC1 interrupt bit in NVIC_ISER_0
   discard debugRTTwrite(0, "Hello from RTC1 IRQ!\n", 25)
   if RTC1.EVENTS_COMPARE0.uint32 != 0:
