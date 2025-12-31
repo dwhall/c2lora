@@ -1,5 +1,6 @@
 # Copyright 2025 Dean Hall, see LICENSE for details
 
+import cm4f/core
 import nrf52840/p
 import timer, reset, hard_fault, debug_rtt
 
@@ -25,7 +26,7 @@ proc main() =
   P1.DIRSET = bluePinBit
   configureTimer(timerInterval, timerCallback)
   while true:
-    asm "  wfi \n"
+    WFI()
 
 when isMainModule:
   main()
