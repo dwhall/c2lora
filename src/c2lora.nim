@@ -1,5 +1,6 @@
 # Copyright 2025 Dean Hall, see LICENSE for details
 
+import std/strformat
 import cm4f/core
 import nrf52840/p
 import timer, reset, hard_fault, debug_rtt
@@ -20,9 +21,15 @@ proc timerCallback =
     else:
       P1.OUTCLR = bluePinBit
 
+proc exerciseDebugPrint =
+  debugPrint("Hello from Nim!\n")
+  let letters = ['a', 'b', 'z', '\n']
+  debugPrint(letters)
+  var answer = 42
+  debugPrint(fmt"The Answer: {answer}")
+
 proc main() =
-  discard debugRTTwriteStr(0, "Hello from Nim!\n")
-  debugRTTprintf(0, "Counter: %d\n", 42)
+  exerciseDebugPrint()
   P1.DIRSET = bluePinBit
   configureTimer(timerInterval, timerCallback)
   while true:
