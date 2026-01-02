@@ -25,16 +25,17 @@ proc blinkLed(pinBit: static uint32, delay: int) =
   P1.OUTCLR = pinBit
   waitBlocking(delay)
 
-proc fault_Handler() {.exportc, noconv, noreturn.} =
-  ## Blinks the green LED ISR number of times.
+proc fault_Handler*(blinkCount: uint32 = 0) {.exportc, noconv, noreturn.} =
+  ## Blinks the green LED blinkCount number of times.
+  ## If blinkCount is zero, uses the ISR number as the count.
   ## Repeats the count after a noticeable pause.
   # Fault handler exceptions are higher priority than SysTick
   # which prevents SysTick from interrupting this handler;
   # so we must use blocking waits to flash the LED
-  let blinkCount = IPSR.ISR_NUMBER
   P1.DIRSET = greenPinBit
+  let actualBlinkCount = if blinkCount == 0: IPSR.ISR_NUMBER else: blinkCount
   while true:
-    for i in 0 ..< blinkCount:
+    for i in 0 ..< actualBlinkCount:
       blinkLed(greenPinBit, standardDelay)
     waitBlocking(longDelay)
 

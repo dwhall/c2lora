@@ -1,14 +1,13 @@
-proc puts(s: cstring) {.importc, header: "<stdio.h>", cdecl.}
-proc putchar(c: int) {.importc, header: "<stdio.h>", cdecl.}
-proc exit(code: int) {.importc, header: "<stdlib.h>", cdecl.}
-let EXIT_FAILURE {.importc, header: "<stdlib.h>", nodecl.}: int
+import debug_rtt, hard_fault
 
 {.push stack_trace: off, profiler:off.}
 
 proc panic*(s: string) =
-  puts(s.cstring)
-  const newline = ord('\n')
-  putchar(newline)
-  exit(EXIT_FAILURE)
+  # In armv7, ISR #7-10 are reserved, so we use 8 blinks to indicate a panic
+  const panicLedBlinkCount = 8
+  debugPrint("PANIC: ")
+  debugPrint(s)
+  debugPrint(['\n'])
+  fault_Handler(panicLedBlinkCount)
 
 {.pop.}

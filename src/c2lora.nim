@@ -26,10 +26,19 @@ proc exerciseDebugPrint =
   let letters = ['a', 'b', 'z', '\n']
   debugPrint(letters)
   var answer = 42
-  debugPrint(fmt"The Answer: {answer}")
+  debugPrint(fmt"The Answer: {answer}\n")
+
+proc exercisePanicHandler =
+  proc unsafeInv(val: int32): int32 =
+    return 42 div val
+  debugPrint($unsafeInv(2))
+  debugPrint("\n")
+  debugPrint($unsafeInv(0)) # should produce DivZero exception
+  debugPrint("\n")
 
 proc main() =
   exerciseDebugPrint()
+  exercisePanicHandler()
   P1.DIRSET = bluePinBit
   configureTimer(timerInterval, timerCallback)
   while true:
