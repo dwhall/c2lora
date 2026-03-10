@@ -3,7 +3,7 @@
 {.compile: "std.c".}
 {.compile: "linker_symbols.c".}
 
-import cm4f/scb
+import armv7m/scb
 import debug_rtt
 
 proc NimMain() {.importc: "NimMain".}
@@ -16,20 +16,20 @@ let
   c_bss_end {.importc: "bss_end".}: ptr cuint
   c_vectorTableAddress {.importc: "vectorTableAddress".}: cint
 
-proc copyDataSection =
+proc copyDataSection() =
   var i = 0
   while addr(c_data_start[i]) < c_data_end:
     c_data_start[i] = c_etext[i]
     inc i
 
-proc zeroBssSection =
+proc zeroBssSection() =
   var i = 0
   while addr(c_bss_start[i]) < c_bss_end:
     c_bss_start[i] = 0'u32
     inc i
 
 proc Reset_Handler() {.exportc, noconv.} =
-  SCB.VTOR = c_vectorTableAddress.uint32
+  SCB.VTOR.TBLOFF(c_vectorTableAddress.uint32)
   copyDataSection()
   zeroBssSection()
   rttInit()

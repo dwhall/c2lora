@@ -1,6 +1,6 @@
 # Copyright 2025 Dean Hall, see LICENSE for details
 
-import cm4f/nvic
+import armv7m/nvic
 import nrf52840/[clock, rtc]
 import debug_rtt
 
@@ -14,33 +14,33 @@ proc configureTimer*(interval: uint32, callback: proc()) =
 
   # Start the low-frequency clock (LFCLK)
   # Source: Internal RC oscillator (0) or external 32.768 kHz crystal (1)
-  CLOCK.TASKS_LFCLKSTOP = 1
-  CLOCK.LFCLKSRC = 0
-  CLOCK.TASKS_LFCLKSTART = 1
+  CLOCK.TASKS_LFCLKSTOP.TASKS_LFCLKSTOP(1'u32)
+  CLOCK.LFCLKSRC.write(0'u32)
+  CLOCK.TASKS_LFCLKSTART.TASKS_LFCLKSTART(1'u32)
 
   # Wait for LFCLK to start
   while CLOCK.EVENTS_LFCLKSTARTED.uint32 == 0:
     discard
-  CLOCK.EVENTS_LFCLKSTARTED = 0
+  CLOCK.EVENTS_LFCLKSTARTED.EVENTS_LFCLKSTARTED(0'u32)
 
-  RTC1.TASKS_STOP = 1           # Stop RTC
-  RTC1.TASKS_CLEAR = 1          # Clear counter
-  RTC1.PRESCALER = 0            # No prescaling: 32.768 kHz / (PRESCALER + 1)
-  RTC1.CC0 = timerInterval      # 3277 ticks ≈ 100ms at 32.768 kHz
+  #  RTC1.TASKS_STOP.TASKS_STOP(1) # Stop RTC
+  RTC1.TASKS_STOP.write(1) # Stop RTC
+  RTC1.TASKS_CLEAR.TASKS_CLEAR(1) # Clear counter
+  RTC1.PRESCALER.PRESCALER(0) # No prescaling: 32.768 kHz / (PRESCALER + 1)
+  RTC1.CC(0).COMPARE(timerInterval) # 3277 ticks ≈ 100ms at 32.768 kHz
 
-  RTC1.INTENSET.COMPARE0(1).write() # Enable interrupt upon COMPARE[0]
-  NVIC.NVIC_ISER_0.SETENA_17(1).write() # Enable interrupt on irq17/RTC1
+  RTC1.INTENSET.COMPARE0(1) # Enable interrupt upon COMPARE[0]
+  NVIC.NVIC_ISER(0).read().SETENA(17, 1).write() # Enable interrupt on irq17/RTC1
 
-  RTC1.TASKS_START = 1
+  RTC1.TASKS_START.TASKS_START(1)
 
 proc RTC1_IRQHandler*() {.exportc, noconv.} =
-  const rtc1Bit = 1'u32 shl 17  # RTC1 interrupt bit in NVIC_ISER_0
   discard debugRTTwrite(0, "Hello from RTC1 IRQ!\n", 25)
-  if RTC1.EVENTS_COMPARE0.uint32 != 0:
-    RTC1.EVENTS_COMPARE0 = 0
-    RTC1.CC0 = RTC1.CC0.uint32 + timerInterval
+  if RTC1.EVENTS_COMPARE.read().uint32 != 0:
+    RTC1.EVENTS_COMPARE.write(0'u32)
+    let nextCompare = RTC1.CC(0).read().COMPARE().uint32 + timerInterval
+    RTC1.CC(0).COMPARE(nextCompare)
     timerCallback()
-    NVIC.NVIC_ICPR_0 = rtc1Bit # Clear pending irq17/RTC1
-    while RTC1.EVENTS_COMPARE0.uint32 != 0:
+    NVIC.NVIC_ICPR(0).CLRPEND(17, 1'u32)
+    while RTC1.EVENTS_COMPARE(0).read().EVENTS_COMPARE().uint32 != 0'u32:
       discard # wait for event to clear
-
