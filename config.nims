@@ -44,8 +44,11 @@ switch("define", "nimMemAlignTiny")
 
 # Debugging
 when defined(debug):
-  switch("debugger", "native")
-  switch("debuginfo", "on")
+  when defined(macosx):
+    switch("passC", "-g")  # embed DWARF debug info directly in ELF
+  else:
+    switch("debugger", "native")
+    switch("debuginfo", "on")
   switch("lineDir", "on")
 else:
   switch("debugger", "off")
