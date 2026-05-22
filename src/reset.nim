@@ -1,19 +1,20 @@
 {.compile: "vector_table.c".}
 {.compile: "stubs.c".}
 {.compile: "std.c".}
-{.compile: "linker_symbols.c".}
 
 import armv7m/scb
 import debug_rtt
 
 proc NimMain() {.importc: "NimMain".}
 
-let
-  c_etext {.importc: "etext".}: ptr UncheckedArray[cuint]
-  c_data_start {.importc: "data_start".}: ptr UncheckedArray[cuint]
-  c_data_end {.importc: "data_end".}: ptr cuint
-  c_bss_start {.importc: "bss_start".}: ptr UncheckedArray[cuint]
-  c_bss_end {.importc: "bss_end".}: ptr cuint
+let # from linker script
+  c_etext {.importc: "__etext".}: ptr UncheckedArray[cuint]
+  c_data_start {.importc: "__data_start__".}: ptr UncheckedArray[cuint]
+  c_data_end {.importc: "__data_end__".}: ptr cuint
+  c_bss_start {.importc: "__bss_start__".}: ptr UncheckedArray[cuint]
+  c_bss_end {.importc: "__bss_end__".}: ptr cuint
+
+let # from project source
   c_vectorTableAddress {.importc: "vectorTableAddress".}: cint
 
 proc copyDataSection() =
