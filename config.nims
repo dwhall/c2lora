@@ -92,7 +92,7 @@ task build, "Build the project (debug by default)":
   let gccExe = findExe("arm-none-eabi-gcc")
   if gccExe == "":
     quit("arm-none-eabi-gcc not found in PATH")
-  let gccPath = gccExe.parentDir() & "/"
+  let gccPath = '"' & gccExe.parentDir() & "/\""
   exec "nim c" & pathFlags & modeFlags &
        " --arm.any.gcc.path:" & gccPath &
        " --arm.any.gcc.exe:arm-none-eabi-gcc" &
