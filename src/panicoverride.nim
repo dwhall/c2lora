@@ -1,14 +1,9 @@
-proc puts(s: cstring) {.importc, header: "<stdio.h>", cdecl.}
-proc putchar(c: int) {.importc, header: "<stdio.h>", cdecl.}
-proc exit(code: int) {.importc, header: "<stdlib.h>", cdecl.}
-let EXIT_FAILURE {.importc, header: "<stdlib.h>", nodecl.}: int
+import debug_rtt
 
 {.push stack_trace: off, profiler:off.}
 
 proc panic*(s: string) =
-  puts(s.cstring)
-  const newline = ord('\n')
-  putchar(newline)
-  exit(EXIT_FAILURE)
+  debugPrint(s)
+  debugPrint("\n")
 
 {.pop.}
