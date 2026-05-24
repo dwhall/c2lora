@@ -5,32 +5,36 @@
 import armv7m/scb
 import debug_rtt
 
-proc NimMain() {.importc: "NimMain".}
-
 let # from linker script
-  c_etext {.importc: "__etext".}: ptr UncheckedArray[cuint]
-  c_data_start {.importc: "__data_start__".}: ptr UncheckedArray[cuint]
-  c_data_end {.importc: "__data_end__".}: ptr cuint
-  c_bss_start {.importc: "__bss_start__".}: ptr UncheckedArray[cuint]
-  c_bss_end {.importc: "__bss_end__".}: ptr cuint
-
-let # from project source
-  c_vectorTableAddress {.importc: "vectorTableAddress".}: cint
+  c_etext {.importc: "__etext".}: char
+  c_data_start {.importc: "__data_start__".}: char
+  c_data_end {.importc: "__data_end__".}: char
+  c_bss_start {.importc: "__bss_start__".}: char
+  c_bss_end {.importc: "__bss_end__".}: char
 
 proc copyDataSection() =
+  let
+    data_start = cast[ptr UncheckedArray[cuint]](addr c_data_start)
+    etext = cast[ptr UncheckedArray[cuint]](addr c_etext)
   var i = 0
-  while addr(c_data_start[i]) < c_data_end:
-    c_data_start[i] = c_etext[i]
+  while addr(data_start[i]) < addr c_data_end:
+    data_start[i] = etext[i]
     inc i
 
 proc zeroBssSection() =
+  let bss_start = cast[ptr UncheckedArray[cuint]](addr c_bss_start)
   var i = 0
-  while addr(c_bss_start[i]) < c_bss_end:
-    c_bss_start[i] = 0'u32
+  while addr(bss_start[i]) < addr c_bss_end:
+    bss_start[i] = 0
     inc i
 
+let # from project source
+  c_vectorTable {.importc: "vectorTable".}: cint
+
+proc NimMain() {.importc: "NimMain".}
+
 proc Reset_Handler() {.exportc, noconv.} =
-  SCB.VTOR.TBLOFF(c_vectorTableAddress.uint32)
+  SCB.VTOR.write(cast[uint32](addr c_vectorTable))
   copyDataSection()
   zeroBssSection()
   rttInit()

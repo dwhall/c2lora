@@ -89,7 +89,7 @@ extern uint32_t __StackTop;
    The used attribute prevents the optimizer from removing this struct
    that is not referred to by any other variable.
 */
-static VectorTable const vectorTable __attribute__((section(".isr_vector"), used)) = {
+VectorTable const vectorTable __attribute__((section(".isr_vector"), used)) = {
     .stackPointer = &__StackTop,
     .exception = {
         Reset_Handler,
@@ -159,4 +159,3 @@ static VectorTable const vectorTable __attribute__((section(".isr_vector"), used
         SPIM3_IRQHandler,     /* 63 */
     },
 };
-intptr_t const vectorTableAddress = (intptr_t)&vectorTable;
