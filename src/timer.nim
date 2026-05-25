@@ -34,7 +34,7 @@ proc configureTimer*(interval: uint32, callback: proc()) =
   RTC1.TASKS_START.TASKS_START(1)
 
 proc RTC1_IRQHandler*() {.exportc, noconv.} =
-  discard debugRTTwrite(0, "Hello from RTC1 IRQ!\n", 25)
+  debugPrint("Hello from RTC1 IRQ!\n")
   if RTC1.EVENTS_COMPARE.read().uint32 != 0:
     RTC1.EVENTS_COMPARE.write(0)
     let nextCompare = RTC1.CC(0).read().COMPARE().uint32 + timerInterval
