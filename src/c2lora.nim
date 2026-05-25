@@ -11,15 +11,15 @@ proc default_Handler() {.exportc, noconv.} =
   # TODO: clear interrupt
   discard
 
-const timerInterval = 3277'u32 # ~100 ms
+const timerInterval = 3277 # ~100 ms
 
 proc timerCallback() =
   var ledState {.global, volatile.} = false
   ledState = not ledState
   if ledState:
-    P1.OUTSET.PIN4(1'u32)
+    P1.OUTSET.PIN4(1)
   else:
-    P1.OUTCLR.PIN4(1'u32)
+    P1.OUTCLR.PIN4(1)
 
 proc exerciseDebugPrint() =
   debugPrint("Hello from Nim!\n")
@@ -29,8 +29,10 @@ proc exerciseDebugPrint() =
   debugPrint(fmt"The Answer: {answer}")
 
 proc main() =
-  exerciseDebugPrint()
-  P1.DIRSET.PIN4(1'u32)
+  #exerciseDebugPrint()
+  P1.DIRSET.PIN4(1)
+  P1.OUTSET.PIN4(1) # DWH DEBUG
+
   configureTimer(timerInterval, timerCallback)
   while true:
     WFI()
