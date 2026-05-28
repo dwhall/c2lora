@@ -1,7 +1,7 @@
 # Copyright 2025 Dean Hall, see LICENSE for details
 
 import armv7m/nvic
-import nrf52840/[clock, rtc]
+import nrf52840/rtc
 import debug_rtt
 
 var
@@ -11,17 +11,6 @@ var
 proc configureTimer*(interval: uint32, callback: proc()) =
   timerInterval = interval
   timerCallback = callback
-
-  # Start the low-frequency clock (LFCLK)
-  # Source: Internal RC oscillator (0) or external 32.768 kHz crystal (1)
-  CLOCK.TASKS_LFCLKSTOP.TASKS_LFCLKSTOP(1)
-  CLOCK.LFCLKSRC.write(0)
-  CLOCK.TASKS_LFCLKSTART.TASKS_LFCLKSTART(1)
-
-  # Wait for LFCLK to start
-  while CLOCK.EVENTS_LFCLKSTARTED.uint32 == 0:
-    discard
-  CLOCK.EVENTS_LFCLKSTARTED.EVENTS_LFCLKSTARTED(0)
 
   RTC1.TASKS_STOP.TASKS_STOP(1) # Stop RTC
   RTC1.TASKS_CLEAR.TASKS_CLEAR(1) # Clear counter

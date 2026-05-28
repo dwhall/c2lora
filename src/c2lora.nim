@@ -3,7 +3,7 @@
 import std/strformat
 import armv7m/core
 import nrf52840/p
-import timer, reset, hard_fault, debug_rtt
+import clocks, timer, reset, hard_fault, debug_rtt
 
 # Hardware: P1.04/LED2/RAK19007 Blue
 
@@ -33,6 +33,7 @@ proc main() =
   P1.DIRSET.PIN4(1)
   P1.OUTSET.PIN4(1) # DWH DEBUG
 
+  initClocks()
   configureTimer(timerInterval, timerCallback)
   while true:
     WFI()
