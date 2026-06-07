@@ -1,9 +1,6 @@
 [submodule "wiki"]
 	path = wiki
 	url = https://github.com/dwhall/c2lora.wiki.git
-[submodule "deps/libc/embeddedartistry"]
-	path = deps/libc/embeddedartistry
-	url = https://github.com/embeddedartistry/libc.git
 [submodule "deps/uf2"]
 	path = deps/uf2
 	url = https://github.com/microsoft/uf2.git
