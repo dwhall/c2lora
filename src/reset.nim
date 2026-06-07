@@ -11,7 +11,7 @@ let # from linker script
   c_bss_start {.importc: "__bss_start__".}: char
   c_bss_end {.importc: "__bss_end__".}: char
 
-proc copyDataSection() =
+proc copyDataSection() {.inline.} =
   let
     data_start = cast[ptr UncheckedArray[cuint]](addr c_data_start)
     etext = cast[ptr UncheckedArray[cuint]](addr c_etext)
@@ -20,7 +20,7 @@ proc copyDataSection() =
     data_start[i] = etext[i]
     inc i
 
-proc zeroBssSection() =
+proc zeroBssSection() {.inline.} =
   let bss_start = cast[ptr UncheckedArray[cuint]](addr c_bss_start)
   var i = 0
   while addr(bss_start[i]) < addr c_bss_end:
