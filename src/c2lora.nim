@@ -1,6 +1,5 @@
 # Copyright 2025 Dean Hall, see LICENSE for details
 
-import std/strformat
 import armv7m/core
 import nrf52840/p
 import clocks, timer, reset, hard_fault, krnl
@@ -21,15 +20,7 @@ proc timerCallback() =
   else:
     P1.OUTCLR.PIN4(1)
 
-proc exerciseDebugPrint() =
-  debugPrint("Hello from Nim!\n")
-  let letters = ['a', 'b', 'z', '\n']
-  debugPrint(letters)
-  var answer = 42
-  debugPrint(fmt"The Answer: {answer}")
-
 proc main() =
-  #exerciseDebugPrint()
   P1.DIRSET.PIN4(1)
   P1.OUTSET.PIN4(1) # DWH DEBUG
 
