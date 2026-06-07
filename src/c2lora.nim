@@ -30,4 +30,6 @@ proc main() =
     WFI()
 
 when isMainModule:
+  boot()
+  init()
   main()
