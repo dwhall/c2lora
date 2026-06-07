@@ -2,7 +2,7 @@
 
 import armv7m/nvic
 import nrf52840/rtc
-import debug_rtt
+import krnl
 
 var
   timerInterval: uint32

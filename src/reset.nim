@@ -3,7 +3,6 @@
 {.compile: "std.c".}
 
 import armv7m/scb
-import debug_rtt
 
 let # from linker script
   c_etext {.importc: "__etext".}: char
@@ -37,5 +36,4 @@ proc Reset_Handler() {.exportc, noconv.} =
   SCB.VTOR.write(cast[uint32](addr c_vectorTable))
   copyDataSection()
   zeroBssSection()
-  rttInit()
   NimMain() # this will call the nim module given to the nim compiler

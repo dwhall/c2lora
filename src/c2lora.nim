@@ -3,7 +3,7 @@
 import std/strformat
 import armv7m/core
 import nrf52840/p
-import clocks, timer, reset, hard_fault, debug_rtt
+import clocks, timer, reset, hard_fault, krnl
 
 # Hardware: P1.04/LED2/RAK19007 Blue
 
