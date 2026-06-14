@@ -40,7 +40,6 @@ switch("define", "nimAllocPagesViaMalloc")  # requires mm:arc or mm:orc
 switch("define", "nimPage512")
 switch("define", "nimMemAlignTiny")
 
-
 # Debugging
 when defined(debug):
   when defined(macosx):
@@ -89,6 +88,9 @@ task build, "Build the project (debug by default)":
   for dep in buildDeps:
     exec "nim --skipParentCfg " & dep
     pathFlags.add(" --path:" & dep.parentDir())
+
+  # Add platform and project configuration to the path
+  pathFlags.add(" --path:src/krnl_cnfg")
 
   # Build main project
   let gccExe = findExe("arm-none-eabi-gcc")
