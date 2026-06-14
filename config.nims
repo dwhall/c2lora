@@ -1,5 +1,7 @@
 #!fmt: off
 
+import os
+
 mode = ScriptMode.Verbose
 
 const
@@ -10,9 +12,6 @@ const
 # Compiler options
 switch("arm.any.gcc.options.always", "-w -fmax-errors=4 -march=armv7e-m -mtune=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections")
 switch("arm.any.gcc.options.linker", "-w -march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T linkers/nrf52.ld -o build/c2lora.elf -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections")
-
-# Embedded Artistry Libc
-# switch("passL","deps/libc/libc.a")
 
 # Nim cache directory
 switch("nimcache", "build/nimcache")
@@ -41,8 +40,6 @@ switch("define", "nimAllocPagesViaMalloc")  # requires mm:arc or mm:orc
 switch("define", "nimPage512")
 switch("define", "nimMemAlignTiny")
 
-# Experimental
-# switch("define", "nimPreviewSlimSystem")  # https://nim-lang.org/blog/2022/12/21/version-20-rc.html
 
 # Debugging
 when defined(debug):
@@ -69,10 +66,15 @@ let buildDeps = [
   "deps" / "svd" / "build.nims"
 ]
 
+proc uglyFixGetHomeDir*(): string =
+  result = getHomeDir()
+  if result.len < 2:
+    result = getEnv("USERPROFILE")
+
 task build, "Build the project (debug by default)":
   let mode = if paramCount() > 1: paramStr(2) else: "debug"
 
-  var pathFlags = ""
+  var pathFlags = "--nimblePath:\"" & uglyFixGetHomeDir() & ".nimble/pkgs2\""
   var modeFlags = ""
 
   case mode
@@ -93,7 +95,7 @@ task build, "Build the project (debug by default)":
   if gccExe == "":
     quit("arm-none-eabi-gcc not found in PATH")
   let gccPath = '"' & gccExe.parentDir() & "/\""
-  exec "nim c" & pathFlags & modeFlags &
+  exec "nim c " & pathFlags & modeFlags &
        " --arm.any.gcc.path:" & gccPath &
        " --arm.any.gcc.exe:arm-none-eabi-gcc" &
        " --arm.any.gcc.linkerexe:arm-none-eabi-gcc " &
@@ -106,6 +108,7 @@ task build, "Build the project (debug by default)":
 
   let objdumpOutput = gorgeEx("arm-none-eabi-objdump -D " & buildPath & ".elf")
   writeFile(buildPath & "-objdump.txt", objdumpOutput.output)
+  echo "Objdump output written to " & buildPath & "-objdump.txt"
 
   exec "python3 deps/uf2/utils/uf2conv.py --base 0x26000 --family NRF52840 " &
        buildPath & ".bin --output " & buildPath & ".uf2 --convert"
