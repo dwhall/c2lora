@@ -73,16 +73,14 @@ proc uglyFixGetHomeDir*(): string =
 task build, "Build the project (debug by default)":
   let mode = if paramCount() > 1: paramStr(2) else: "debug"
 
-  var pathFlags = "--nimblePath:\"" & uglyFixGetHomeDir() & ".nimble/pkgs2\""
-  var modeFlags = ""
-
-  case mode
-  of "debug":
-    modeFlags = " -d:debug"
-  of "release":
-    modeFlags = " -d:release"
-  else:
-    quit("Unknown build mode: " & mode & " (use 'debug' or 'release')")
+  var pathFlags = " --nimblePath:\"" & uglyFixGetHomeDir() & ".nimble/pkgs2\""
+  var defines = case mode
+    of "debug":
+      " -d:debug"
+    of "release":
+      " -d:release"
+    else:
+      quit("Unknown build mode: " & mode & " (use 'debug' or 'release')")
 
   # Build dependencies first
   for dep in buildDeps:
@@ -90,6 +88,7 @@ task build, "Build the project (debug by default)":
     pathFlags.add(" --path:" & dep.parentDir())
 
   # Add platform and project configuration to the path
+  defines.add(" -d:platform=nrf52")
   pathFlags.add(" --path:src/krnl_cnfg")
 
   # Build main project
@@ -97,7 +96,7 @@ task build, "Build the project (debug by default)":
   if gccExe == "":
     quit("arm-none-eabi-gcc not found in PATH")
   let gccPath = '"' & gccExe.parentDir() & "/\""
-  exec "nim c " & pathFlags & modeFlags &
+  exec "nim c" & pathFlags & defines &
        " --arm.any.gcc.path:" & gccPath &
        " --arm.any.gcc.exe:arm-none-eabi-gcc" &
        " --arm.any.gcc.linkerexe:arm-none-eabi-gcc " &
@@ -123,3 +122,6 @@ task load, "Load UF2 file to the device":
   if not fileExists(uf2Path):
     quit("UF2 file not found. Please build the project first.")
   exec "python3 deps/uf2/utils/uf2conv.py --deploy " & uf2Path
+
+
+

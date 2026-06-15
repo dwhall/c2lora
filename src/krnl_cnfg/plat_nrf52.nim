@@ -3,4 +3,8 @@
 ## Platform-specific definitions for the nrf52 processor
 ##
 
-const platInterruptCount = 64
+import nrf52840/device
+
+const platInterruptCount* = 64
+const platFpuAvail* = cpu.fpuAvail
+const platNvicPriorityBits* = cpu.nvicPriorityBits.uint32

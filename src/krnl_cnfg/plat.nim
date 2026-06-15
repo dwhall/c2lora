@@ -3,6 +3,7 @@
 ## Platform-specific definitions needed by KRNL
 ##
 
+const platform {.strdefine.} = ""
 when platform == "nrf52":
   include "plat_nrf52.nim"
 else:
