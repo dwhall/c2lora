@@ -50,6 +50,8 @@ PROVIDE(TIMER3_IRQHandler = default_Handler);
 PROVIDE(TIMER4_IRQHandler = default_Handler);
 PROVIDE(PWM0_IRQHandler = default_Handler);
 PROVIDE(PDM_IRQHandler = default_Handler);
+PROVIDE(ACL_NVMC_IRQHandler = default_Handler);
+PROVIDE(PPI_IRQHandler = default_Handler);
 PROVIDE(MWU_IRQHandler = default_Handler);
 PROVIDE(PWM1_IRQHandler = default_Handler);
 PROVIDE(PWM2_IRQHandler = default_Handler);
@@ -61,5 +63,8 @@ PROVIDE(USBD_IRQHandler = default_Handler);
 PROVIDE(UARTE1_IRQHandler = default_Handler);
 PROVIDE(QSPI_IRQHandler = default_Handler);
 PROVIDE(CRYPTOCELL_IRQHandler = default_Handler);
+PROVIDE(CRYPTOCELL_ENG_IRQHandler = default_Handler);
+
 PROVIDE(PWM3_IRQHandler = default_Handler);
+
 PROVIDE(SPIM3_IRQHandler = default_Handler);

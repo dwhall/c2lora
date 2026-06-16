@@ -5,6 +5,6 @@
 
 import nrf52840/device
 
-const platInterruptCount* = 64
+const platInterruptCount* = 48
 const platFpuAvail* = cpu.fpuAvail
 const platNvicPriorityBits* = cpu.nvicPriorityBits.uint32

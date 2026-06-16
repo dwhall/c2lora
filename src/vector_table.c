@@ -10,7 +10,7 @@ Reference:
 typedef void (*ExceptionHandler)(void);
 typedef void (*ExternalIrqHandler)(void);
 typedef struct
-{
+{                                       /* Exception Number */
     uint32_t *stackPointer;             /* 0      */
     ExceptionHandler exception[15];     /* 1..15  */
     ExternalIrqHandler externalIrq[48]; /* 16..63 */
@@ -66,6 +66,8 @@ void TIMER3_IRQHandler(void);
 void TIMER4_IRQHandler(void);
 void PWM0_IRQHandler(void);
 void PDM_IRQHandler(void);
+void ACL_NVMC_IRQHandler(void);
+void PPI_IRQHandler(void);
 void MWU_IRQHandler(void);
 void PWM1_IRQHandler(void);
 void PWM2_IRQHandler(void);
@@ -77,7 +79,10 @@ void USBD_IRQHandler(void);
 void UARTE1_IRQHandler(void);
 void QSPI_IRQHandler(void);
 void CRYPTOCELL_IRQHandler(void);
+void CRYPTOCELL_ENG_IRQHandler(void);
+void RESERVED44_IRQHandler(void);
 void PWM3_IRQHandler(void);
+void RESERVED46_IRQHandler(void);
 void SPIM3_IRQHandler(void);
 
 /* The linker script provides this symbol.  The stack is located at or
@@ -108,54 +113,54 @@ VectorTable const vectorTable __attribute__((section(".isr_vector"), used)) = {
         PendSV_Handler,
         SysTick_Handler,
     },
-    .externalIrq = {
-        POWER_CLOCK_IRQHandler, /* 16 */
+    .externalIrq = { /* Interrupt Number */
+        POWER_CLOCK_IRQHandler, /* 0 */
         RADIO_IRQHandler,
         UARTE0_UART0_IRQHandler,
         SPIM0_SPIS0_TWIM0_TWIS0_SPI0_TWI0_IRQHandler,
-        SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1_IRQHandler, /* 20 */
-        NFCT_IRQHandler,
+        SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1_IRQHandler,
+        NFCT_IRQHandler, /* 5 */
         GPIOTE_IRQHandler,
         SAADC_IRQHandler,
         TIMER0_IRQHandler,
         TIMER1_IRQHandler,
-        TIMER2_IRQHandler,
+        TIMER2_IRQHandler, /* 10 */
         RTC0_IRQHandler,
         TEMP_IRQHandler,
         RNG_IRQHandler,
-        ECB_IRQHandler,       /* 30 */
-        CCM_AAR_IRQHandler,
+        ECB_IRQHandler,
+        CCM_AAR_IRQHandler, /* 15 */
         WDT_IRQHandler,
         RTC1_IRQHandler,
         QDEC_IRQHandler,
         COMP_LPCOMP_IRQHandler,
-        SWI0_EGU0_IRQHandler,
+        SWI0_EGU0_IRQHandler, /* 20 */
         SWI1_EGU1_IRQHandler,
         SWI2_EGU2_IRQHandler,
         SWI3_EGU3_IRQHandler,
-        SWI4_EGU4_IRQHandler, /* 40 */
-        SWI5_EGU5_IRQHandler,
+        SWI4_EGU4_IRQHandler,
+        SWI5_EGU5_IRQHandler, /* 25 */
         TIMER3_IRQHandler,
         TIMER4_IRQHandler,
         PWM0_IRQHandler,
         PDM_IRQHandler,
-        reserved_Handler,
-        reserved_Handler,
+        ACL_NVMC_IRQHandler, /* 30 */
+        PPI_IRQHandler,
         MWU_IRQHandler,
         PWM1_IRQHandler,
-        PWM2_IRQHandler,      /* 50 */
-        SPIM2_SPIS2_SPI2_IRQHandler,
+        PWM2_IRQHandler,
+        SPIM2_SPIS2_SPI2_IRQHandler, /* 35 */
         RTC2_IRQHandler,
         I2S_IRQHandler,
         FPU_IRQHandler,
         USBD_IRQHandler,
-        UARTE1_IRQHandler,
+        UARTE1_IRQHandler, /* 40 */
         QSPI_IRQHandler,
         CRYPTOCELL_IRQHandler,
+        CRYPTOCELL_ENG_IRQHandler,
         reserved_Handler,
-        reserved_Handler,     /* 60 */
-        PWM3_IRQHandler,
+        PWM3_IRQHandler, /* 45 */
         reserved_Handler,
-        SPIM3_IRQHandler,     /* 63 */
+        SPIM3_IRQHandler, /* 47 */
     },
 };
