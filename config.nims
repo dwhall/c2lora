@@ -59,12 +59,6 @@ else:
 switch("styleCheck", "usages")  # prohibit flexible capitalization of identifiers
 switch("styleCheck", "error")
 
-import std/os
-
-let buildDeps = [
-  "deps" / "svd" / "build.nims"
-]
-
 proc uglyFixGetHomeDir*(): string =
   result = getHomeDir()
   if result.len < 2:
@@ -82,10 +76,9 @@ task build, "Build the project (debug by default)":
     else:
       quit("Unknown build mode: " & mode & " (use 'debug' or 'release')")
 
-  # Build dependencies first
-  for dep in buildDeps:
-    exec "nim --skipParentCfg " & dep
-    pathFlags.add(" --path:" & dep.parentDir())
+  # Build SVD dependency first
+  exec "nim --skipParentCfg deps/svd/build.nims"
+  pathFlags.add(" --path:deps/svd" )
 
   # Add platform and project configuration to the path
   defines.add(" -d:platform=nrf52")
