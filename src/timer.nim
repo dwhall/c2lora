@@ -1,4 +1,4 @@
-# Copyright 2025 Dean Hall, see LICENSE for details
+## Copyright 2025 Dean Hall, see LICENSE for details
 
 import armv7m/nvic
 import nrf52840/rtc

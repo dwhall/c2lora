@@ -1,35 +1,25 @@
-# Copyright 2025 Dean Hall, see LICENSE for details
+## Copyright 2025 Dean Hall, see LICENSE for details
+##
 
 import armv7m/core
-import nrf52840/p
-import clocks, timer, reset, hard_fault, krnl
-
-# Hardware: P1.04/LED2/RAK19007 Blue
+import blinky, clocks, timer, reset, hard_fault, krnl
 
 proc default_Handler() {.exportc, noconv.} =
-  # TODO: clear interrupt
   discard
 
-const timerInterval = 3277 # ~100 ms
-
-proc timerCallback() =
-  var ledState {.global, volatile.} = false
-  ledState = not ledState
-  if ledState:
-    P1.OUTSET.PIN4(1)
-  else:
-    P1.OUTCLR.PIN4(1)
-
-proc main() =
-  P1.DIRSET.PIN4(1)
-  P1.OUTSET.PIN4(1) # DWH DEBUG
-
+proc bootPrj() =
   initClocks()
-  configureTimer(timerInterval, timerCallback)
+
+proc initPrj() =
+  initBlinky(42)
+
+proc main() {.noreturn.} =
   while true:
     WFI()
 
 when isMainModule:
   boot()
+  bootPrj()
   init()
+  initPrj()
   main()

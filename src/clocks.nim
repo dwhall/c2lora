@@ -1,6 +1,5 @@
 # Copyright 2026 Dean Hall, see LICENSE for details
 
-#import armv7m/nvic
 import nrf52840/clock
 
 proc initClocks*() =
