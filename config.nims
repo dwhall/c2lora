@@ -59,37 +59,48 @@ else:
 switch("styleCheck", "usages")  # prohibit flexible capitalization of identifiers
 switch("styleCheck", "error")
 
-proc uglyFixGetHomeDir*(): string =
+import std/os
+
+let buildDeps = [
+  "deps" / "svd" / "build.nims"
+]
+
+proc uglyFixGetHomeDir(): string =
   result = getHomeDir()
   if result.len < 2:
     result = getEnv("USERPROFILE")
 
-task build, "Build the project (debug by default)":
-  let mode = if paramCount() > 1: paramStr(2) else: "debug"
+proc buildPathFlags(): string =
+  result = " --nimblePath:\"" & uglyFixGetHomeDir() & ".nimble/pkgs2\""
+  for dep in buildDeps:
+    result.add(" --path:" & dep.parentDir())
+  result.add(" --path:src/krnl_cnfg ")
 
-  var pathFlags = " --nimblePath:\"" & uglyFixGetHomeDir() & ".nimble/pkgs2\""
-  var defines = case mode
+proc buildDefines(): string =
+  let mode = if paramCount() > 1: paramStr(2) else: "debug"
+  result = case mode
     of "debug":
       " -d:debug"
     of "release":
       " -d:release"
     else:
       quit("Unknown build mode: " & mode & " (use 'debug' or 'release')")
+  # define the platform
+  result.add(" -d:platform=nrf52 ")
 
-  # Build SVD dependency first
-  exec "nim --skipParentCfg deps/svd/build.nims"
-  pathFlags.add(" --path:deps/svd" )
-
-  # Add platform and project configuration to the path
-  defines.add(" -d:platform=nrf52")
-  pathFlags.add(" --path:src/krnl_cnfg")
+task build, "Build the project (debug by default)":
+  # Build dependencies first
+  for dep in buildDeps:
+    exec "nim --skipParentCfg " & dep
 
   # Build main project
   let gccExe = findExe("arm-none-eabi-gcc")
   if gccExe == "":
     quit("arm-none-eabi-gcc not found in PATH")
   let gccPath = '"' & gccExe.parentDir() & "/\""
-  exec "nim c" & pathFlags & defines &
+  exec "nim c" &
+       buildPathFlags() &
+       buildDefines() &
        " --arm.any.gcc.path:" & gccPath &
        " --arm.any.gcc.exe:arm-none-eabi-gcc" &
        " --arm.any.gcc.linkerexe:arm-none-eabi-gcc " &
@@ -116,5 +127,7 @@ task load, "Load UF2 file to the device":
     quit("UF2 file not found. Please build the project first.")
   exec "python3 deps/uf2/utils/uf2conv.py --deploy " & uf2Path
 
-
-
+task gendot, "Generate DOT file from module dependencies":
+  exec "nim genDepend " & buildPathFlags() & buildDefines() & srcDir / target & ".nim"
+  exec "nim --skipParentCfg r tools/dotCompactor.nim < src/c2lora.dot > src/c2lora_compact.dot"
+  exec "dot -Tpng -y -oc2lora_deps.png src/c2lora_compact.dot"
