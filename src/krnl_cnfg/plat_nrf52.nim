@@ -7,4 +7,4 @@ import nrf52840/device
 
 const platIrqCnt* = 48
 const platFpuAvail* = cpu.fpuAvail
-const platNvicPriorityBits* = cpu.nvicPriorityBits.uint32
+const platNvicPriorityBits* = cpu.nvicPriorityBits

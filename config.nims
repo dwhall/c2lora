@@ -71,10 +71,10 @@ proc uglyFixGetHomeDir(): string =
     result = getEnv("USERPROFILE")
 
 proc buildPathFlags(): string =
-  result = " --nimblePath:\"" & uglyFixGetHomeDir() & ".nimble/pkgs2\""
+  result = " --NimblePath:\"" & uglyFixGetHomeDir() & ".nimble" / "pkgs2\""
   for dep in buildDeps:
     result.add(" --path:" & dep.parentDir())
-  result.add(" --path:src/krnl_cnfg ")
+  result.add(" --path:src" / "krnl_cnfg ")
 
 proc buildDefines(): string =
   let mode = if paramCount() > 1: paramStr(2) else: "debug"
@@ -131,3 +131,10 @@ task gendot, "Generate DOT file from module dependencies":
   exec "nim genDepend " & buildPathFlags() & buildDefines() & srcDir / target & ".nim"
   exec "nim --skipParentCfg r tools/dotCompactor.nim < src/c2lora.dot > src/c2lora_compact.dot"
   exec "dot -Tpng -y -oc2lora_deps.png src/c2lora_compact.dot"
+# begin Nimble config (version 2)
+when withDir(thisDir(), system.fileExists("nimble.paths")):
+  include "nimble.paths"
+# end Nimble config
+
+
+

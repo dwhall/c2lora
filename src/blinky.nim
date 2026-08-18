@@ -7,9 +7,8 @@
 import nrf52840/p
 import krnl
 
-const N = 4
 var
-  blinky: Actr[N]
+  blinky: Actr
   ledState: bool
 
 proc initLed() =
@@ -25,11 +24,11 @@ proc toggleLed() =
   else:
     P1.OUTCLR.PIN4(1)
 
-proc blinkyHandler(self: Actr[N], event: Event): HandlerReturn {.nimcall.} =
+proc blinkyHandler(self: Actr, sig: Signal, val: EventValue): HandlerReturn {.nimcall.} =
   ## Toggles the LED on ANY event
   toggleLed()
 
 proc initBlinky*(priority: ActrPriority) =
-  initLed()
-  blinky.priority = priority
+  blinky = newActr(4, priority)
   blinky.eventHandler = blinkyHandler
+  initLed()

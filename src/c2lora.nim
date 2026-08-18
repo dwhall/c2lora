@@ -2,24 +2,26 @@
 ##
 
 import armv7m/core
-import blinky, clocks, timer, reset, hard_fault, krnl
+import blinky, clocks, hard_fault, krnl
 
-proc default_Handler() {.exportc, noconv.} =
-  discard
+#proc default_Handler() {.exportc, noconv.} =
+#  discard
 
 proc bootPrj() =
   initClocks()
 
 proc initPrj() =
-  initBlinky(42)
+  let p = ActrPriority(20)
+  initBlinky(p)
 
 proc main() {.noreturn.} =
   while true:
     WFI()
 
 when isMainModule:
+  var k: Krnl
   boot()
   bootPrj()
-  init()
+  init(k)
   initPrj()
   main()
