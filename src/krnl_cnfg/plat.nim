@@ -5,6 +5,6 @@
 
 const platform {.strdefine.} = ""
 when platform == "nrf52":
-  include "plat_nrf52.nim"
+  include plat_nrf52
 else:
   {.error: "`platform` MUST be defined to a value with a match in plat.nim".}

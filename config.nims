@@ -8,6 +8,7 @@ const
   target = "c2lora"
   binDir = "build"
   srcDir = "src"
+  platform = "nrf52" # must match a case in plat.nim
 
 # Compiler options
 switch("arm.any.gcc.options.always", "-w -fmax-errors=4 -march=armv7e-m -mtune=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections")

@@ -2,12 +2,33 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Nim YesDrX",
+      "type": "cppdbg",
+      "request": "launch",
+      //"program": "${fileDirname}/${fileBasenameNoExtension}",
+      "program": "${workspaceFolder}/build/c2lora.elf",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "nim_debugger_mi",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
       "name": "BMP nRF52",
       "type": "cortex-debug", // Requires Cortex-Debug extension (marus25.cortex-debug)
       "request": "launch",
 
       "servertype": "external",
-      "gdbTarget": "COM5", // Adjust this to your BMP's COM port
+      "gdbTarget": "COM2", // Adjust this to your BMP's COM port
 
       "executable": "${workspaceFolder}/build/c2lora.elf",
       "device": "nRF52",
@@ -30,7 +51,15 @@
         "monitor rtt channel 0",
         "monitor rtt enable",
         "monitor rtt cb"
-      ]
+      ],
+
+      // @YesDrX
+      "miDebuggerPath": "${userHome}/.nimble/bin/nim_debugger_mi.cmd",
+      "miDebuggerArgs": "--gdb=D:\\Program Files\\Arm GNU Toolchain arm-none-eabi\\14.3 rel1\\bin\\arm-none-eabi-gdb.exe", //you may specify gdb path by --gdb=/path/to/your/gdb.exe
+      "MIMode": "gdb",
+      "args": [],
+      "cwd": "${workspaceFolder}"
+
     }
   ]
 }
