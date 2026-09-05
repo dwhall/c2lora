@@ -75,7 +75,8 @@ proc buildPathFlags(): string =
   result = " --NimblePath:\"" & uglyFixGetHomeDir() & ".nimble" / "pkgs2\""
   for dep in buildDeps:
     result.add(" --path:" & dep.parentDir())
-  result.add(" --path:src" / "krnl_cnfg ")
+  result.add(" --path:src" / "plat ")
+  result.add(" --path:src" / "proj ")
 
 proc buildDefines(): string =
   let mode = if paramCount() > 1: paramStr(2) else: "debug"
