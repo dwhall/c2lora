@@ -3,6 +3,7 @@
 
 import armv7m/core
 import blinky, clocks, hard_fault, krnl
+import plat/plat
 
 #proc default_Handler() {.exportc, noconv.} =
 #  discard
@@ -16,7 +17,7 @@ proc initPrj() =
 
 proc main() {.noreturn.} =
   while true:
-    WFI()
+    plat.restUntilInterrupt()
 
 when isMainModule:
   var k = new Krnl

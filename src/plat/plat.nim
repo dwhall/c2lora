@@ -3,6 +3,8 @@
 ## Platform-specific definitions needed by KRNL
 ##
 
+import armv7m/core
+
 type Platform* =
   concept
       ## The quantity of interrupts (not exceptions) available in the processor
@@ -17,3 +19,6 @@ when platform == "nrf52":
   include plat_nrf52
 else:
   {.error: "`platform` MUST be defined to a value with a match in plat.nim".}
+
+proc restUntilInterrupt*() {.inline.} =
+  WFI()
