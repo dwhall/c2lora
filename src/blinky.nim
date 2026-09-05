@@ -5,7 +5,8 @@
 ##
 
 import bsp/led
-import krnl, proj
+import proj/proj
+import krnl
 
 const ledToBlink = Led2Blue
 var

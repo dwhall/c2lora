@@ -1,15 +1,14 @@
 ## Copyright 2025 Dean Hall, see LICENSE for details
 ##
 
-import armv7m/core
-import blinky, clocks, hard_fault, krnl
-import plat/plat
+import blinky, hard_fault, krnl
+import plat/[plat, init]
 
 #proc default_Handler() {.exportc, noconv.} =
 #  discard
 
 proc bootPrj() =
-  initClocks()
+  discard
 
 proc initPrj() =
   let p = ActrPriority(20)
@@ -21,8 +20,9 @@ proc main() {.noreturn.} =
 
 when isMainModule:
   var k = new Krnl
-  boot()
+  krnl.boot()
   bootPrj()
-  init(k)
+  init.init()
+  krnl.init(k)
   initPrj()
   main()
