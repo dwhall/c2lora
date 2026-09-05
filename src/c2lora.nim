@@ -19,7 +19,7 @@ proc main() {.noreturn.} =
     WFI()
 
 when isMainModule:
-  var k: Krnl
+  var k = new Krnl
   boot()
   bootPrj()
   init(k)
