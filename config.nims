@@ -12,7 +12,7 @@ const
 
 # Compiler options
 switch("arm.any.gcc.options.always", "-w -fmax-errors=4 -march=armv7e-m -mtune=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections")
-switch("arm.any.gcc.options.linker", fmt"-w -march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T linkers/nrf52.ld -o build/{entryModule}.elf -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections")
+switch("arm.any.gcc.options.linker", fmt"-w -march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T linkers/{platform}.ld -o build/{entryModule}.elf -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections")
 
 # Nim cache directory
 switch("nimcache", "build/nimcache")
@@ -88,7 +88,7 @@ proc buildDefines(): string =
     else:
       quit("Unknown build mode: " & mode & " (use 'debug' or 'release')")
   # define the platform
-  result.add(" -d:platform=nrf52 ")
+  result.add(fmt" -d:platform={platform} ")
 
 task build, "Build the project (debug by default)":
   # Build dependencies first
