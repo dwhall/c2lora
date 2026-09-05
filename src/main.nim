@@ -2,7 +2,7 @@
 ##
 
 import blinky, hard_fault, krnl
-import plat/plat
+import plat/[boot, plat]
 
 #proc default_Handler() {.exportc, noconv.} =
 #  discard
@@ -20,7 +20,7 @@ proc main() {.noreturn.} =
 
 when isMainModule:
   var k = new Krnl
-  krnl.boot()
+  boot.boot()
   bootPrj()
   plat.init()
   krnl.init(k)
