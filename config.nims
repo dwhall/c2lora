@@ -1,18 +1,18 @@
 #!fmt: off
 
-import os
+import os, strformat
 
 mode = ScriptMode.Verbose
 
 const
-  target = "c2lora"
+  entryModule = "main"
   binDir = "build"
   srcDir = "src"
   platform = "nrf52" # must match a case in plat.nim
 
 # Compiler options
 switch("arm.any.gcc.options.always", "-w -fmax-errors=4 -march=armv7e-m -mtune=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections")
-switch("arm.any.gcc.options.linker", "-w -march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T linkers/nrf52.ld -o build/c2lora.elf -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections")
+switch("arm.any.gcc.options.linker", fmt"-w -march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T linkers/nrf52.ld -o build/{entryModule}.elf -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections")
 
 # Nim cache directory
 switch("nimcache", "build/nimcache")
@@ -106,10 +106,10 @@ task build, "Build the project (debug by default)":
        " --arm.any.gcc.path:" & gccPath &
        " --arm.any.gcc.exe:arm-none-eabi-gcc" &
        " --arm.any.gcc.linkerexe:arm-none-eabi-gcc " &
-       srcDir / target & ".nim"
+       srcDir / entryModule & ".nim"
 
   # Post-build steps
-  let buildPath = binDir / target
+  let buildPath = binDir / entryModule
   exec "arm-none-eabi-objcopy -O binary " & buildPath & ".elf " & buildPath &
        ".bin"
 
@@ -124,13 +124,13 @@ task clean, "Clean build artifacts":
   rmDir(binDir)
 
 task load, "Load UF2 file to the device":
-  let uf2Path = binDir / target & ".uf2"
+  let uf2Path = binDir / entryModule & ".uf2"
   if not fileExists(uf2Path):
     quit("UF2 file not found. Please build the project first.")
   exec "python3 deps/uf2/utils/uf2conv.py --deploy " & uf2Path
 
 task gendot, "Generate DOT file from module dependencies":
-  exec "nim genDepend " & buildPathFlags() & buildDefines() & srcDir / target & ".nim"
+  exec "nim genDepend " & buildPathFlags() & buildDefines() & srcDir / entryModule & ".nim"
   exec "nim --skipParentCfg r tools/dotCompactor.nim < src/c2lora.dot > src/c2lora_compact.dot"
   exec "dot -Tpng -y -oc2lora_deps.png src/c2lora_compact.dot"
 # begin Nimble config (version 2)
