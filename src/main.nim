@@ -11,18 +11,13 @@ proc bootPrj() =
   discard
 
 proc initPrj() =
-  let p = ActrPriority(20)
-  initBlinky(p)
-
-proc main() {.noreturn.} =
-  while true:
-    plat.restUntilInterrupt()
+  initBlinky(ActrPriority(20))
 
 when isMainModule:
-  var k = new Krnl
   boot.boot()
   bootPrj()
   plat.init()
+  var k = new Krnl
   krnl.init(k)
   initPrj()
-  main()
+  plat.lowPowerRunForever()
