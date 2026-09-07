@@ -14,13 +14,14 @@ var
   ledState: bool
 
 proc blinkyHandler(
-    self: Actr, sig: Signal, val: EventValue
+    self: var Actr, sig: Signal, val: EventValue
 ): HandlerReturn {.nimcall.} =
   ## Toggles the LED on ANY event
   setLed(ledToBlink, ledState)
   ledState = not ledState
 
 proc initBlinky*(priority: ActrPriority) =
-  blinky = newActr(4, priority)
+  blinky.initActr(4, priority)
   blinky.eventHandler = blinkyHandler
-  initLed(ledToBlink)
+  initLed(ledToBlink) # TODO: move to handler's @INIT case
+  discard syscallRegisterActr(addr blinky)

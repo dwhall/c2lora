@@ -7,17 +7,14 @@ import plat/[boot, plat]
 #proc default_Handler() {.exportc, noconv.} =
 #  discard
 
-proc bootPrj() =
-  discard
-
-proc initPrj() =
-  initBlinky(ActrPriority(20))
-
 when isMainModule:
   boot.boot()
-  bootPrj()
+  # TODO: project-specific boot
   plat.init()
-  var k = new Krnl
-  krnl.init(k)
-  initPrj()
+  var k: Krnl
+  init(addr k)
+
+  exitPrivilegedMode()
+
+  initBlinky(ActrPriority(20))
   plat.lowPowerRunForever()
