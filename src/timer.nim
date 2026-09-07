@@ -2,6 +2,7 @@
 
 import armv7m/nvic
 import nrf52840/rtc
+import plat/debug_rtt
 import krnl
 
 var

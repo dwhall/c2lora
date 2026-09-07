@@ -27,6 +27,8 @@ when platform == "nrf52":
 else:
   {.error: "`platform` MUST be defined to a value with a match in plat.nim".}
 
+type IrqNmbr* = range[0 .. irqCnt() - 1] # interrupts are external to the ARM core
+
 proc lowPowerRunForever*() {.inline, noreturn.} =
   while true:
     WFI()
