@@ -2,7 +2,7 @@
 {.compile: "std.c".}
 {.used.}
 
-import armv7m/scb
+import armv7m/[core, scb]
 import vectortable
 
 let # from linker script
@@ -11,6 +11,8 @@ let # from linker script
   c_data_end {.importc: "__data_end__".}: char
   c_bss_start {.importc: "__bss_start__".}: char
   c_bss_end {.importc: "__bss_end__".}: char
+  # The nonvol one from vector_table.c
+  c_vectorTable {.importc: "c_vectorTable", used.}: VectorTable
 
 proc copyDataSection() {.inline.} =
   let
@@ -30,11 +32,10 @@ proc zeroBssSection() {.inline.} =
 
 proc NimMain() {.importc: "NimMain".}
 
-# The non-volatile Vector Table used at power-on-reset; from vector_table.c
-let c_vectorTable {.importc: "c_vectorTable", used.}: VectorTable
-
 proc Reset_Handler() {.exportc, noconv.} =
   SCB.VTOR.write(cast[uint32](addr c_vectorTable))
+  DSB()
+  ISB()
   copyDataSection()
   zeroBssSection()
   NimMain() # this will call the nim module given to the nim compiler

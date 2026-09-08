@@ -20,7 +20,7 @@ type
   IrqHandler* = proc()
   VectorTable* = object
     stackPointer: uint32
-    exnHandler: array[1 .. 16, ExnHandler]
+    exnHandler: array[1 .. 15, ExnHandler]
     irqHandler: array[IrqNmbr, IrqHandler]
 
   RamVectorTable* = VectorTable

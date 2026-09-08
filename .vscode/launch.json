@@ -6,7 +6,7 @@
       "type": "cppdbg",
       "request": "launch",
       //"program": "${fileDirname}/${fileBasenameNoExtension}",
-      "program": "${workspaceFolder}/build/c2lora.elf",
+      "program": "${workspaceFolder}/build/main.elf",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -30,7 +30,7 @@
       "servertype": "external",
       "gdbTarget": "COM2", // Adjust this to your BMP's COM port
 
-      "executable": "${workspaceFolder}/build/c2lora.elf",
+      "executable": "${workspaceFolder}/build/main.elf",
       "device": "nRF52",
       "interface": "swd",
 
@@ -40,7 +40,7 @@
       "gdbPath": "arm-none-eabi-gdb",
 
       "overrideLaunchCommands": [
-        "file build/c2lora.elf",
+        "file build/main.elf",
         "monitor swd_scan",
         "attach 1",
         "load",
