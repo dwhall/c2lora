@@ -1,10 +1,12 @@
 ## Copyright 2025 Dean Hall, see LICENSE for details
 ##
 
+import debug_rtt
 import blinky, hard_fault, krnl
 import plat/[boot, plat, reset]
 
 proc main() {.noreturn.} =
+  initRTT()
   boot.boot()
   # TODO: project-specific boot
   plat.init()

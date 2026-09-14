@@ -9,7 +9,7 @@
 
 import std/bitops
 import armv7m/[fp, scb]
-import debug_rtt, plat
+import plat
 
 proc validateNvicPriorityConfig() {.inline.} =
   ## Validates the NVIC's priority configuration
@@ -44,7 +44,6 @@ proc setNvicPriorityGrouping(grouping: static uint32 = 0) {.inline.} =
 proc boot*() =
   ## Initializes the system after reset
   ## This is called after NimMain() and before main()
-  initRTT()
   validateNvicPriorityConfig()
   initFpu()
   setNvicPriorityGrouping()
