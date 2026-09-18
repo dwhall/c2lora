@@ -3,6 +3,7 @@
 ## Platform-specific definitions for the nrf52 processor
 ##
 
+import bitops
 import nrf52840/[clock, device]
 
 #### Platform constants
@@ -15,6 +16,10 @@ func fpuAvail*(): bool {.compileTime.} =
 
 func nvicPriorityBits*(): int {.compileTime.} =
   cpu.nvicPriorityBits
+
+func vtorAlignment*(): int {.compileTime.} =
+  let sizeofVectorTable = (16 + irqCnt()) * 4
+  1 shl succ fastLog2(sizeofVectorTable)
 
 #### Platform initialization
 

@@ -19,7 +19,7 @@ type
   ExnHandler = proc()
   IrqHandler* = proc()
   VectorTable* = object
-    stackPointer: uint32
+    stackPointer {.align(vtorAlignment()).}: uint32
     exnHandler: array[1 .. 15, ExnHandler]
     irqHandler: array[IrqNmbr, IrqHandler]
 

@@ -3,14 +3,16 @@
 
 import debug_rtt
 import blinky, hard_fault, krnl
+import krnlpkg/syscall
 import plat/[boot, plat, reset]
+
+var k: Krnl
 
 proc main() {.noreturn.} =
   initRTT()
   boot.boot()
   # TODO: project-specific boot
   plat.init()
-  var k: Krnl
   krnl.init(addr k)
 
   switchToRamVectorTable()

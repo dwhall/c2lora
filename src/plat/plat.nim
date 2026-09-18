@@ -14,6 +14,8 @@ type Platform* =
       func fpuAvail(): bool {.compileTime.}
       ## The number of priority bits implemented in the NVIC
       func nvicPriorityBits(): int {.compileTime.}
+      ## The memory alignment required for the vector table (VTOR)
+      func vtorAlignment(): int {.compileTime.}
 
       ## Run time functions
       ## Platform initialization
