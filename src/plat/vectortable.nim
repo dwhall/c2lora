@@ -16,8 +16,8 @@
 import plat
 
 type
-  ExnHandler = proc()
-  IrqHandler* = proc()
+  ExnHandler = proc() {.noconv.}
+  IrqHandler* = proc() {.noconv.}
   VectorTable* = object
     stackPointer {.align(vtorAlignment()).}: uint32
     exnHandler: array[1 .. 15, ExnHandler]
@@ -31,12 +31,3 @@ func setIrqHandler*(self: var VectorTable, irqNmbr: IrqNmbr, handler: IrqHandler
 
 func findIrqHandler*(self: VectorTable, handler: IrqHandler): int =
   self.irqHandler.find(handler)
-
-# The non-volatile Vector Table used at power-on-reset; from vector_table.c
-let c_vectorTable* {.importc: "c_vectorTable", used.}: VectorTable
-
-proc initRamVectorTable*(vt: var RamVectorTable, initIsr: IrqHandler) =
-  vt.stackPointer = c_vectorTable.stackPointer
-  vt.exnHandler = c_vectorTable.exnHandler
-  for handler in vt.irqHandler.mitems:
-    handler = initIsr
