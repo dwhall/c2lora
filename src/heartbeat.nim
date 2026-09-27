@@ -27,7 +27,7 @@ proc heartbeatHandler(
   else:
     RetUnhandled
 
-proc timerCallback() {.nimcall.} =
+proc heartbeatCallback() {.nimcall.} =
   ## Executes in Handler/privileged mode.
   ## Sends an event to the heartbeat Actr
   var count {.global.} = 0'u32
@@ -37,9 +37,9 @@ proc timerCallback() {.nimcall.} =
 
 proc mainHeartbeat*(priority: ActrPriority, led: BspLed, intervalMs: uint32) =
   heartbeat.initActr(4, priority)
-  heartbeat.eventHandler = heartbeatHandler
+  heartbeat.setEventHandler(heartbeatHandler)
   ledToBlink = led
   initLed(ledToBlink) # TODO: move to handler's @INIT case
   discard syscallRegisterActr(addr heartbeat)
   let intervalTicks = intervalMs * 32768 div 1000
-  configureTimer(intervalTicks, timerCallback)
+  configureTimer(intervalTicks, heartbeatCallback)
