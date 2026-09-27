@@ -9,12 +9,11 @@ import plat/timer
 import proj/proj
 import krnl
 
-const
-  ledToBlink = Led2Blue
-  sysHeartbeatSig = Sig("tbd.sys.heartbeat", 0)
+const sysHeartbeatSig = Sig("tbd.sys.heartbeat", 0)
 
 var
   heartbeat: Actr
+  ledToBlink: BspLed
   ledState: bool
 
 proc heartbeatHandler(
@@ -36,9 +35,10 @@ proc timerCallback() {.nimcall.} =
   inc count
   heartbeat.post(sysHeartbeatEvnt)
 
-proc mainHeartbeat*(priority: ActrPriority, intervalMs: uint32) =
+proc mainHeartbeat*(priority: ActrPriority, led: BspLed, intervalMs: uint32) =
   heartbeat.initActr(4, priority)
   heartbeat.eventHandler = heartbeatHandler
+  ledToBlink = led
   initLed(ledToBlink) # TODO: move to handler's @INIT case
   discard syscallRegisterActr(addr heartbeat)
   let intervalTicks = intervalMs * 32768 div 1000

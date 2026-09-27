@@ -13,3 +13,7 @@ proc default_Handler() {.exportc, noconv.} =
       WFI()
     else:
       discard
+
+proc lowPowerRunForever*() {.noreturn.} =
+  while true:
+    WFI()

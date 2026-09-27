@@ -3,8 +3,6 @@
 ## Platform-specific definitions needed by KRNL
 ##
 
-import armv7m/core
-
 type Platform* =
   concept
       ## Compile time constants
@@ -20,8 +18,6 @@ type Platform* =
       ## Run time functions
       ## Platform initialization
       func init()
-      ## Infinite loop that waits for interrupts in low-power state
-      proc lowPowerRunForever() {.inline, noreturn.}
 
 const platform {.strdefine.} = ""
 when platform == "nrf52":
@@ -30,7 +26,3 @@ else:
   {.error: "`platform` MUST be defined to a value with a match in plat.nim".}
 
 type IrqNmbr* = range[0 .. irqCnt() - 1] # interrupts are external to the ARM core
-
-proc lowPowerRunForever*() {.inline, noreturn.} =
-  while true:
-    WFI()

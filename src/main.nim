@@ -1,7 +1,7 @@
 ## Copyright 2025 Dean Hall, see LICENSE for details
 ##
 
-import debug_rtt
+import bsp/led, proj, debug_rtt
 import heartbeat, hard_fault, krnl
 import krnlpkg/syscall
 import plat/[boot, plat, reset]
@@ -19,8 +19,8 @@ proc main() {.noreturn.} =
   init()
   switchToRamVectorTable()
   exitPrivilegedMode()
-  mainHeartbeat(priority = ActrPriority(20), intervalMs = 1000)
-  plat.lowPowerRunForever()
+  mainHeartbeat(priority = 20, led = Led1Green, intervalMs = 1000)
+  proj.lowPowerRunForever()
 
 when isMainModule:
   main()
