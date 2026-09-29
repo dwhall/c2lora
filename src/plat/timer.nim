@@ -2,13 +2,15 @@
 
 import armv7m/nvic
 import nrf52840/rtc
-import krnlpkg/syscall_intf
+import krnlpkg/[syscall_intf, effects]
+
+type PrivelegedModeCallback = proc() {.nimcall, tags: [PrivilegedModeEffect].}
 
 var
   timerInterval: uint32
-  timerCallback: proc()
+  timerCallback: PrivelegedModeCallback
 
-proc RTC1IrqHandler() {.noconv.} =
+proc RTC1IrqHandler() {.noconv, tags: [PrivilegedModeEffect].} =
   if RTC1.EVENTS_COMPARE(0).read().uint32 != 0:
     RTC1.EVENTS_COMPARE(0).write(0)
     # FOUR clock cycles must happen after the above write
@@ -20,7 +22,7 @@ proc RTC1IrqHandler() {.noconv.} =
       timerCallback()
     NVIC.NVIC_ICPR(0).CLRPEND(irq_RTC1, 1)
 
-proc configureTimer*(interval: uint32, callback: proc()) =
+proc configureTimer*(interval: uint32, callback:PrivelegedModeCallback) {.tags: [PrivilegedModeEffect].} =
   timerInterval = interval
   timerCallback = callback
 

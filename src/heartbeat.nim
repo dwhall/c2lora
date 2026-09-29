@@ -8,6 +8,7 @@ import bsp/led
 import plat/timer
 import proj/proj
 import krnl
+import krnlpkg/effects
 
 const sysHeartbeatSig = Sig("tbd.sys.heartbeat", 0)
 
@@ -18,7 +19,7 @@ var
 
 proc heartbeatHandler(
     self: var Actr, sig: Signal, val: EventValue
-): HandlerReturn {.nimcall.} =
+): HandlerReturn {.nimcall, forbids: [PrivilegedModeEffect].} =
   case sig
   of sysHeartbeatSig:
     setLed(ledToBlink, ledState)
