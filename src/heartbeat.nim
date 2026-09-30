@@ -34,7 +34,7 @@ proc heartbeatCallback() {.nimcall.} =
   var count {.global.} = 0'u32
   let sysHeartbeatEvnt = Event(sig: sysHeartbeatSig, val: count)
   inc count
-  heartbeat.post(sysHeartbeatEvnt)
+  heartbeat.postEvent(sysHeartbeatEvnt)
 
 proc mainHeartbeat*(priority: ActrPriority, led: BspLed, intervalMs: uint32) =
   heartbeat.initActr(4, priority, heartbeatHandler)
