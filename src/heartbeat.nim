@@ -37,8 +37,7 @@ proc heartbeatCallback() {.nimcall.} =
   heartbeat.post(sysHeartbeatEvnt)
 
 proc mainHeartbeat*(priority: ActrPriority, led: BspLed, intervalMs: uint32) =
-  heartbeat.initActr(4, priority)
-  heartbeat.setEventHandler(heartbeatHandler)
+  heartbeat.initActr(4, priority, heartbeatHandler)
   ledToBlink = led
   initLed(ledToBlink) # TODO: move to handler's @INIT case
   discard syscallRegisterActr(addr heartbeat)
