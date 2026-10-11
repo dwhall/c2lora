@@ -8,18 +8,23 @@ import plat/[boot, plat, reset, timer]
 
 var k: Krnl
 
-proc init() =
-  initRTT()
-  boot.boot()
+proc boot() =
+  bootPlat()
   # TODO: project-specific boot
-  plat.init()
-  initKrnl(addr k, rtc1Timer)
+  # TODO: bootloader
+
+proc init() =
+  initRTT() # project debug
+  initPlat()
+  initKrnl(addr k)
 
 proc main() {.noreturn.} =
+  boot()
   init()
   switchToRamVectorTable()
-  exitPrivilegedMode()
+  mainKrnl(rtc1Timer)
   mainHeartbeat(priority = 20, led = Led1Green)
+  exitPrivilegedMode()
   proj.lowPowerRunForever()
 
 when isMainModule:

@@ -41,7 +41,7 @@ proc setNvicPriorityGrouping(grouping: static uint32 = 0) {.inline.} =
   const writeKey = 0x05FA
   SCB.AIRCR.read().VECTKEY(writeKey).PRIGROUP(grouping).write()
 
-proc boot*() =
+proc bootPlat*() =
   ## Initializes the system after reset
   ## This is called after NimMain() and before main()
   validateNvicPriorityConfig()

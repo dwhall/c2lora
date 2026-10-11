@@ -35,5 +35,5 @@ proc initClocks() =
     discard
   CLOCK.EVENTS_LFCLKSTARTED.EVENTS_LFCLKSTARTED(0)
 
-proc init*() =
+proc initPlat*() =
   initClocks()

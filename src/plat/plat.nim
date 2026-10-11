@@ -17,7 +17,7 @@ type Platform* =
 
       ## Run time functions
       ## Platform initialization
-      func init()
+      func initPlat()
 
 const platform {.strdefine.} = ""
 when platform == "nrf52":
