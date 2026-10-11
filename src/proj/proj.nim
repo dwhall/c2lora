@@ -4,6 +4,7 @@
 ##
 
 import armv7m/core
+import proj_timers
 
 type EventValue* = uint32
 
@@ -17,3 +18,7 @@ proc default_Handler() {.exportc, noconv.} =
 proc lowPowerRunForever*() {.noreturn.} =
   while true:
     WFI()
+
+const
+  projTimerDeclarations* = [(intervalMs: 1000'u32, sigOrd: ProjTimerHeartbeat.ord.uint32)]
+  projTimerPrescaler* = 0'u32

@@ -4,7 +4,7 @@
 import bsp/led, proj, debug_rtt
 import heartbeat, hard_fault, krnl
 import krnlpkg/syscall
-import plat/[boot, plat, reset]
+import plat/[boot, plat, reset, timer]
 
 var k: Krnl
 
@@ -13,13 +13,13 @@ proc init() =
   boot.boot()
   # TODO: project-specific boot
   plat.init()
-  initKrnl(addr k)
+  initKrnl(addr k, rtc1Timer)
 
 proc main() {.noreturn.} =
   init()
   switchToRamVectorTable()
   exitPrivilegedMode()
-  mainHeartbeat(priority = 20, led = Led1Green, intervalMs = 1000)
+  mainHeartbeat(priority = 20, led = Led1Green)
   proj.lowPowerRunForever()
 
 when isMainModule:

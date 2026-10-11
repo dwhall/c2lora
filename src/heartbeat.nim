@@ -5,12 +5,11 @@
 ##
 
 import bsp/led
-import plat/timer
-import proj/proj
+import proj/[proj, proj_timers]
 import krnl
-import krnlpkg/effects
+import krnlpkg/[effects, signal, systimer]
 
-const sysHeartbeatSig = Sig("tbd.sys.heartbeat", 0)
+const SigSysHeartbeat = Sig(nsSysTimer, ProjTimerHeartbeat.ord.uint32)
 
 var
   heartbeat: Actr
@@ -21,25 +20,16 @@ proc heartbeatHandler(
     self: var Actr, sig: Signal, val: EventValue
 ): HandlerReturn {.nimcall, forbids: [PrivilegedModeEffect].} =
   case sig
-  of sysHeartbeatSig:
+  of SigSysHeartbeat:
     setLed(ledToBlink, ledState)
     ledState = not ledState
     RetHandled
   else:
     RetUnhandled
 
-proc heartbeatCallback() {.nimcall.} =
-  ## Executes in Handler/privileged mode.
-  ## Sends an event to the heartbeat Actr
-  var count {.global.} = 0'u32
-  let sysHeartbeatEvnt = Event(sig: sysHeartbeatSig, val: count)
-  inc count
-  heartbeat.postEvent(sysHeartbeatEvnt)
-
-proc mainHeartbeat*(priority: ActrPriority, led: BspLed, intervalMs: uint32) =
+proc mainHeartbeat*(priority: ActrPriority, led: BspLed) =
   heartbeat.initActr(4, priority, heartbeatHandler)
   ledToBlink = led
   initLed(ledToBlink) # TODO: move to handler's @INIT case
   discard syscallRegisterActr(addr heartbeat)
-  let intervalTicks = intervalMs * 32768 div 1000
-  configureTimer(intervalTicks, heartbeatCallback)
+  discard syscallSubscribe(addr heartbeat, SigSysHeartbeat)
