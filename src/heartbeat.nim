@@ -7,9 +7,7 @@
 import bsp/led
 import proj/[proj, proj_timers]
 import krnl
-import krnlpkg/[effects, signal, systimer]
-
-const SigSysHeartbeat = Sig(nsSysTimer, ProjTimerHeartbeat.ord.uint32)
+import krnlpkg/[effects, signal]
 
 var
   heartbeat: Actr

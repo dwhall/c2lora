@@ -1,12 +1,15 @@
 ## Copyright 2025 Dean Hall, see LICENSE for details
 ##
 
-import bsp/led, proj, debug_rtt
+import bsp/led, debug_rtt
+import proj/[proj, proj_timers]
 import heartbeat, hard_fault, krnl
-import krnlpkg/syscall
+import krnlpkg/[syscall, systimer]
 import plat/[boot, plat, reset, timer]
 
-var k: Krnl
+var
+  k: Krnl
+  sysTmr: SysTimer
 
 proc boot() =
   bootPlat()
@@ -22,7 +25,7 @@ proc main() {.noreturn.} =
   boot()
   init()
   switchToRamVectorTable()
-  mainKrnl(rtc1Timer)
+  mainSysTimer(addr sysTmr, rtc1Timer, projTimerDeclarationList, projTimerPrescaler)
   mainHeartbeat(priority = 20, led = Led1Green)
   exitPrivilegedMode()
   proj.lowPowerRunForever()
