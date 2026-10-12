@@ -3,7 +3,7 @@
 
 import bsp/led, debug_rtt
 import proj/[proj, proj_timers]
-import heartbeat, hard_fault, krnl
+import bluebeat, heartbeat, hard_fault, krnl
 import krnlpkg/[syscall, systimer]
 import plat/[boot, plat, reset, timer]
 
@@ -26,7 +26,8 @@ proc main() {.noreturn.} =
   init()
   switchToRamVectorTable()
   mainSysTimer(addr sysTmr, rtc1Timer, projTimerDeclarationList, projTimerPrescaler)
-  mainHeartbeat(priority = 20, led = Led1Green)
+  mainHeartbeat(priority = 2, led = Led1Green)
+  mainBluebeat(priority = 1, led = Led2Blue)
   exitPrivilegedMode()
   proj.lowPowerRunForever()
 

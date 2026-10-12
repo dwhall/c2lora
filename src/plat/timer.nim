@@ -25,7 +25,7 @@ var
 func toTicks(millisecs: uint32, prescaler: uint32): SysTick =
   ## Converts milliseconds to hardware ticks, given the current prescaler.
   # TODO: involve the prescaler
-  millisecs.SysTick * 32768 div 1000
+  SysTick(millisecs * 32768'u32 div 1000'u32)
 
 proc getTicks(): SysTick =
   ## Returns the current tick count, extended to 64 bits by the overflow count.
