@@ -19,7 +19,9 @@ iterator compactLines(f: File, nodeSet: var HashSet[Edge]): string =
       if node.startsWith(prefix):
         return replacement
     const replacementTable = [
-      ("../deps/krnl/src/krnlpkg", "krnlpkg"),
+      ("../deps/krnl/src/krnl_impl", "krnl_impl"),
+      ("../deps/krnl/src/krnl_intf", "krnl_intf"),
+      ("../deps/krnl/src/plat", "plat"),
       ("../deps/krnl/deps", "deps"),
       ("../deps", "deps"),
     ]

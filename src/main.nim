@@ -1,11 +1,12 @@
 ## Copyright 2025 Dean Hall, see LICENSE for details
 ##
 
-import bsp/led, debug_rtt
-import proj/[proj, proj_timers]
-import bluebeat, heartbeat, hard_fault, krnl
-import krnlpkg/[syscall, systimer]
-import plat/[boot, plat, reset, timer]
+import krnl_impl/[krnl, syscall, systimer]
+import plat/[boot, debug_rtt, plat, reset]
+import plat/nrf52/timer_nrf52
+import apps/[bluebeat, heartbeat]
+import bsp/led
+import proj/[hard_fault, proj, proj_timers]
 
 var
   k: Krnl

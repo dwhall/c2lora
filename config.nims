@@ -75,7 +75,11 @@ proc buildPathFlags(): string =
   result = " --NimblePath:\"" & uglyFixGetHomeDir() & ".nimble" / "pkgs2\""
   for dep in buildDeps:
     result.add(" --path:" & dep.parentDir())
-  result.add(" --path:src" / "plat ")
+  # krnl imports these modules by bare name: plat, vectortable (krnl's plat/),
+  # the platform's own modules (plat/<platform>/) and proj (this project's proj/)
+  const krnlPlat = "deps" / "krnl" / "src" / "plat"
+  result.add(" --path:" & krnlPlat)
+  result.add(" --path:" & krnlPlat / platform)
   result.add(" --path:src" / "proj ")
 
 proc buildDefines(): string =
@@ -89,6 +93,8 @@ proc buildDefines(): string =
       quit("Unknown build mode: " & mode & " (use 'debug' or 'release')")
   # define the platform
   result.add(fmt" -d:platform={platform} ")
+  # krnl's plat/debug_rtt uses this project's copy of SEGGER RTT
+  result.add(" -d:rttPath=\"" & thisDir() / "deps" / "RTT" & "\" ")
 
 task build, "Build the project (debug by default)":
   # Build dependencies first

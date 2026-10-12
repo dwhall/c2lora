@@ -4,17 +4,16 @@
 ## It uses a Blue LED connected to pin: P1.04/LED2/RAK19007
 ##
 
+import krnl_intf/[actr, effects, event, syscall]
 import bsp/led
-import proj/[proj, proj_timers]
-import krnl
-import krnlpkg/[effects, signal]
+import proj/proj_timers
 
 var
-  bluebeat: Actr
+  heartbeat: Actr
   ledToBlink: BspLed
   ledState: bool
 
-proc bluebeatHandler(
+proc heartbeatHandler(
     self: var Actr, sig: Signal, val: EventValue
 ): HandlerReturn {.nimcall, forbids: [PrivilegedModeEffect].} =
   case sig
@@ -25,9 +24,9 @@ proc bluebeatHandler(
   else:
     RetUnhandled
 
-proc mainBluebeat*(priority: ActrPriority, led: BspLed) =
-  bluebeat.initActr(4, priority, bluebeatHandler)
+proc mainHeartbeat*(priority: ActrPriority, led: BspLed) =
+  heartbeat.initActr(4, priority, heartbeatHandler)
   ledToBlink = led
   initLed(ledToBlink) # TODO: move to handler's @INIT case
-  discard syscallRegisterActr(addr bluebeat)
-  discard syscallSubscribe(addr bluebeat, SigSysHeartbeat)
+  discard syscallRegisterActr(addr heartbeat)
+  discard syscallSubscribe(addr heartbeat, SigSysHeartbeat)
