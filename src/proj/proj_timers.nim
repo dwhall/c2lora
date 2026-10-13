@@ -3,7 +3,7 @@
 ## Project-specific timer enumeration
 ##
 
-import krnl_impl/[signal, systimer]
+import krnl_impl/systimer
 
 type ProjTimers = enum
   ProjTimerHeartbeat

@@ -4,9 +4,9 @@
 ## It uses a Blue LED connected to pin: P1.04/LED2/RAK19007
 ##
 
-import krnl_intf/[actr, effects, event, syscall]
 import bsp/led
-import proj/proj_timers
+import proj/[proj, proj_timers]
+import krnl_intf/[actr, effects, signal, syscall]
 
 var
   heartbeat: Actr
