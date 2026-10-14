@@ -1,7 +1,6 @@
 ## Copyright 2026 Dean Hall See LICENSE for details
 ##
-## The Heartbeat Actr toggles an LED when it receives an event.
-## It uses a Blue LED connected to pin: P1.04/LED2/RAK19007
+## The Heartbeat Actr toggles an LED when it receives the heartbeat event.
 ##
 
 import bsp/led

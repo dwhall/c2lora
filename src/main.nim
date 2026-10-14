@@ -4,8 +4,7 @@
 import krnl_impl/[krnl, syscall, systimer]
 import plat/[boot, debug_rtt, plat, reset]
 import plat/nrf52/timer_nrf52
-import apps/[bluebeat, heartbeat]
-import bsp/led
+import apps/pingpong
 import proj/[hard_fault, proj, proj_timers]
 
 var
@@ -27,8 +26,7 @@ proc main() {.noreturn.} =
   init()
   switchToRamVectorTable()
   mainSysTimer(addr sysTmr, rtc1Timer, projTimerDeclarationList, projTimerPrescaler)
-  mainHeartbeat(priority = 2, led = Led1Green)
-  mainBluebeat(priority = 1, led = Led2Blue)
+  mainPingPong()
   exitPrivilegedMode()
   proj.lowPowerRunForever()
 
