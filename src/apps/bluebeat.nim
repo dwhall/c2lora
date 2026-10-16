@@ -25,7 +25,7 @@ proc bluebeatHandler(
     RetUnhandled
 
 proc mainBluebeat*(priority: ActrPriority, led: BspLed) =
-  bluebeat.initActr(4, priority, bluebeatHandler)
+  newActr(bluebeat, 4, priority, bluebeatHandler)
   ledToBlink = led
   initLed(ledToBlink) # TODO: move to handler's @INIT case
   discard syscallRegisterActr(addr bluebeat)
