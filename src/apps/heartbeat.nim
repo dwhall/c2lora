@@ -27,5 +27,5 @@ proc mainHeartbeat*(priority: ActrPriority, led: BspLed) =
   newActr(heartbeat, 4, priority, heartbeatHandler)
   ledToBlink = led
   initLed(ledToBlink) # TODO: move to handler's @INIT case
-  discard syscallRegisterActr(addr heartbeat)
-  discard syscallSubscribe(addr heartbeat, SigSysHeartbeat)
+  syscallRegisterActr(addr heartbeat)
+  syscallSubscribe(addr heartbeat, SigSysHeartbeat)

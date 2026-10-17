@@ -25,7 +25,7 @@ proc pingHandler(
   case sig
   of SigPong:
     setLed(pingPongLed, true)
-    discard syscallPostEvent(addr pong, pingEvent)
+    syscallPostEvent(addr pong, pingEvent)
     RetHandled
   else:
     RetUnhandled
@@ -36,7 +36,7 @@ proc pongHandler(
   case sig
   of SigPing:
     setLed(pingPongLed, false)
-    discard syscallPostEvent(addr ping, pongEvent)
+    syscallPostEvent(addr ping, pongEvent)
     RetHandled
   else:
     RetUnhandled
@@ -46,6 +46,6 @@ proc mainPingPong*(priority: ActrPriority, led: BspLed) =
   newActr(pong, 4, succ priority, pongHandler)
   pingPongLed = led
   initLed(pingPongLed)
-  discard syscallRegisterActr(addr ping)
-  discard syscallRegisterActr(addr pong)
-  discard syscallPostEvent(addr ping, pongEvent)
+  syscallRegisterActr(addr ping)
+  syscallRegisterActr(addr pong)
+  syscallPostEvent(addr ping, pongEvent)
