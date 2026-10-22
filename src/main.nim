@@ -28,7 +28,7 @@ proc main() {.noreturn.} =
   boot()
   init()
   switchToRamVectorTable()
-  mainSysTimer(addr sysTmr, rtc1Timer, projTimerDeclarationList, projTimerPrescaler)
+  mainSysTimer(addr sysTmr, rtc1Timer, projTimerDeclList, projTimerPrescaler)
   # Heartbeat must precede and be more urgent than pingpong, which doesn't yield
   mainHeartbeat(3, Led2Blue)
   mainPingPong(1, Led1Green) # uses priorities 1 and 2

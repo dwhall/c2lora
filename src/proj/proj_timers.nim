@@ -10,7 +10,6 @@ type ProjTimers = enum
 
 const
   projTimerPrescaler* = 0'u32
-  projTimerDeclarationList* =
-    [(intervalMs: 1000'u32, sigOrd: ProjTimerHeartbeat.ord.uint32)]
-
   SigSysHeartbeat* = SigSysTimer(ProjTimerHeartbeat.ord.uint32)
+  projTimerDeclList* =
+    [declareSysTimer(intervalMs = 1000'u32, sigOrd = ProjTimerHeartbeat.ord.uint32)]
