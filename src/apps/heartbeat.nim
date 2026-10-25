@@ -7,25 +7,26 @@ import bsp/led
 import proj/[proj, proj_timers]
 import krnl_intf/[actr, effects, signal, syscall]
 
-var
-  heartbeat: Actr
+type HeartbeatActr = object of Actr
   ledToBlink: BspLed
   ledState: bool
 
+var heartbeat: HeartbeatActr
+
 proc heartbeatHandler(
-    self: var Actr, sig: Signal, val: EventValue
+    self: var HeartbeatActr, sig: Signal, val: EventValue
 ): HandlerReturn {.nimcall, forbids: [PrivilegedModeEffect].} =
   case sig
   of SigSysHeartbeat:
-    setLed(ledToBlink, ledState)
-    ledState = not ledState
+    setLed(self.ledToBlink, self.ledState)
+    self.ledState = not self.ledState
     RetHandled
   else:
     RetUnhandled
 
 proc mainHeartbeat*(priority: ActrPriority, led: BspLed) =
   initActr(heartbeat, 4, priority, heartbeatHandler)
-  ledToBlink = led
-  initLed(ledToBlink) # TODO: move to handler's @INIT case
+  heartbeat.ledToBlink = led
+  initLed(heartbeat.ledToBlink) # TODO: move to handler's @INIT case
   syscallRegisterActr(addr heartbeat)
   syscallSubscribe(addr heartbeat, SigSysHeartbeat)

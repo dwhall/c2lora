@@ -11,9 +11,7 @@ import krnl_intf/[actr, effects, event, signal, syscall]
 
 const
   SigPing = Sig("tbd.app.pingpong", 0)
-  SigPong = Sig("tbd.app.pingpong", 1)
   pingEvent = Event(sig: SigPing, val: 0)
-  pongEvent = Event(sig: SigPong, val: 0)
 
 var
   ping, pong: Actr
