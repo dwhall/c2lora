@@ -6,7 +6,7 @@
 ##
 
 import bsp/led
-import proj/proj
+import proj/[proj, proj_timers]
 import krnl_intf/[actr, effects, event, signal, syscall]
 
 const
@@ -23,7 +23,7 @@ proc pingHandler(
     self: var Actr, sig: Signal, val: EventValue
 ): HandlerReturn {.nimcall, forbids: [PrivilegedModeEffect].} =
   case sig
-  of SigPong:
+  of SigSysHeartbeat:
     setLed(pingPongLed, true)
     syscallPostEvent(addr pong, pingEvent)
     RetHandled
@@ -36,7 +36,6 @@ proc pongHandler(
   case sig
   of SigPing:
     setLed(pingPongLed, false)
-    syscallPostEvent(addr ping, pongEvent)
     RetHandled
   else:
     RetUnhandled
@@ -47,5 +46,5 @@ proc mainPingPong*(priority: ActrPriority, led: BspLed) =
   pingPongLed = led
   initLed(pingPongLed)
   syscallRegisterActr(addr ping)
+  syscallSubscribe(addr ping, SigSysHeartbeat)
   syscallRegisterActr(addr pong)
-  syscallPostEvent(addr ping, pongEvent)
