@@ -39,8 +39,8 @@ proc pongHandler(
     RetUnhandled
 
 proc mainPingPong*(priority: ActrPriority, led: BspLed) =
-  initActr(ping, 4, priority, pingHandler)
-  initActr(pong, 4, succ priority, pongHandler)
+  initActr(pong, 4, priority, pongHandler)
+  initActr(ping, 4, succ priority, pingHandler)
   pingPongLed = led
   initLed(pingPongLed)
   syscallRegisterActr(addr ping)

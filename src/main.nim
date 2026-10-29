@@ -6,7 +6,7 @@ import plat/[boot, debug_rtt, plat, reset]
 import plat/nrf52/timer_nrf52
 import proj/[hard_fault, proj, proj_timers]
 import krnl_impl/[krnl, syscall, systimer]
-import apps/[heartbeat, pingpong]
+import apps/[tailchain, pingpong] # heartbeat
 
 var
   k: Krnl
@@ -30,8 +30,9 @@ proc main() {.noreturn.} =
   switchToRamVectorTable()
   mainSysTimer(addr sysTmr, rtc1Timer, projTimerDeclList, projTimerPrescaler)
   # Heartbeat must precede and be more urgent than pingpong, which doesn't yield
-  mainHeartbeat(3, Led2Blue)
-  mainPingPong(1, Led1Green) # uses priorities 1 and 2
+  #mainHeartbeat(3, Led2Blue)
+  mainPingPong(1, Led2Blue)
+  mainTailChain(3, Led1Green)
   # TODO: mainKrnl() to send SigSysInit* to all registered Actrs
   exitPrivilegedMode()
   proj.lowPowerRunForever()
