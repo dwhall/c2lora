@@ -96,7 +96,7 @@ proc buildDefines(): string =
   # krnl's plat/debug_rtt uses this project's copy of SEGGER RTT
   result.add(" -d:rttPath=\"" & thisDir() / "deps" / "RTT" & "\" ")
 
-task build, "Build the project (debug by default)":
+proc buildProject() =
   # Build dependencies first
   for dep in buildDeps:
     exec "nim --skipParentCfg " & dep
@@ -125,6 +125,17 @@ task build, "Build the project (debug by default)":
 
   exec "python3 deps/uf2/utils/uf2conv.py --base 0x26000 --family NRF52840 " &
        buildPath & ".bin --output " & buildPath & ".uf2 --convert"
+
+task build, "Build the project (debug by default)":
+  try:
+    buildProject()
+  except OSError:
+    # A failed step's errors scroll up out of view; end with an obvious marker
+    # Silence the hints NimScript would otherwise print after the marker
+    hint("QuitCalled", false)
+    hint("Conf", false)
+    echo "\e[1;31mERROR\e[0m: build failed"
+    quit(QuitFailure)
 
 task clean, "Clean build artifacts":
   rmDir(binDir)
