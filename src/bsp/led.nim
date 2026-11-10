@@ -15,27 +15,17 @@ type BspLed* = enum
   Led1Green
   Led2Blue
 
+const ledPin: array[BspLed, uint32] = [Led1Green: 3'u32, Led2Blue: 4]
+
 proc initLed*(led: BspLed) =
   ## Inits the port GPIO for led as an output
   ## with initial value of off/low
-  case led
-  of Led1Green:
-    P1.OUTCLR.PIN3(1)
-    P1.DIRSET.PIN3(1)
-  of Led2Blue:
-    P1.OUTCLR.PIN4(1)
-    P1.DIRSET.PIN4(1)
+  P1.OUTCLR.write(1'u32 shl ledPin[led])
+  P1.DIRSET.write(1'u32 shl ledPin[led])
 
 proc setLed*(led: BspLed, ledState: bool) =
   ## Sets the port GPIO for led to the value of ledState
-  case led
-  of Led1Green:
-    if ledState:
-      P1.OUTSET.PIN3(1)
-    else:
-      P1.OUTCLR.PIN3(1)
-  of Led2Blue:
-    if ledState:
-      P1.OUTSET.PIN4(1)
-    else:
-      P1.OUTCLR.PIN4(1)
+  if ledState:
+    P1.OUTSET.write(1'u32 shl ledPin[led])
+  else:
+    P1.OUTCLR.write(1'u32 shl ledPin[led])
