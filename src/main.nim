@@ -37,8 +37,9 @@ proc main() {.noreturn.} =
     # compare pingpong and tailchain
     mainPingPong(3, Led2Blue)
     mainTailChain(1, Led1Green)
-  # TODO: mainKrnl() to send SigSysInit* to all registered Actrs
+  # TODO: mainKrnl()?
   exitPrivilegedMode()
+  # TODO: send SigSysInit* to all registered Actrs after exiting privileged mode
   proj.lowPowerRunForever()
 
 when isMainModule:

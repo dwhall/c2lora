@@ -1,6 +1,6 @@
 #!fmt: off
 
-import os, strformat
+import std/[os, strformat]
 
 mode = ScriptMode.Verbose
 
@@ -59,8 +59,6 @@ else:
 # Preferences
 switch("styleCheck", "usages")  # prohibit flexible capitalization of identifiers
 switch("styleCheck", "error")
-
-import std/os
 
 let buildDeps = [
   "deps" / "svd" / "build.nims"
