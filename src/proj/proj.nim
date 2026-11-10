@@ -17,3 +17,7 @@ proc default_Handler() {.exportc, noconv.} =
 proc lowPowerRunForever*() {.noreturn.} =
   while true:
     WFI()
+
+func namespaceIgnoreCase*(): bool {.compileTime.} =
+  ## Returns true if the project wants to ignore case in namespace hashing
+  true
