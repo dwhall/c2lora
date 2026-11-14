@@ -6,6 +6,7 @@
 import armv7m/[core, nvic, scb]
 import bsp/led
 import plat/debug_rtt
+import krnl_intf/effects
 
 # The fault_Handler overrides the weak symbol in the vector table.
 # Any hard fault will trigger this handler, despite no reference from
@@ -36,7 +37,7 @@ type StackedFrame = object
 
 proc faultHandlerBody(
     frame: ptr StackedFrame, excReturn: uint32
-) {.exportc: "faultHandlerBody", noconv, noreturn.} =
+) {.exportc: "faultHandlerBody", noconv, noreturn, tags: [PrivilegedModeEffect].} =
   ## Blinks the LED a number of times to match the exception number.
   ## Repeats the count after a noticeable pause.
   # Fault handler exceptions are higher priority than SysTick
@@ -99,7 +100,7 @@ proc faultHandlerBody(
       blinkLed(ledToBlink, standardDelay)
     waitBlocking(longDelay)
 
-proc fault_Handler() {.exportc, noconv, asmNoStackFrame.} =
+proc fault_Handler() {.exportc, noconv, asmNoStackFrame, tags: [PrivilegedModeEffect].} =
   ## Captures EXC_RETURN and the stacked frame before any prologue
   ## touches LR or SP, then tail-calls the body.
   asm """
