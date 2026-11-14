@@ -121,7 +121,7 @@ proc buildProject() =
   writeFile(buildPath & "-objdump.txt", objdumpOutput.output)
   echo "Objdump output written to " & buildPath & "-objdump.txt"
 
-  exec "python3 deps/uf2/utils/uf2conv.py --base 0x26000 --family NRF52840 " &
+  exec "python3 tools/uf2/uf2conv.py --base 0x26000 --family NRF52840 " &
        buildPath & ".bin --output " & buildPath & ".uf2 --convert"
 
 task build, "Build the project (debug by default)":
@@ -142,7 +142,7 @@ task load, "Load UF2 file to the device":
   let uf2Path = binDir / entryModule & ".uf2"
   if not fileExists(uf2Path):
     quit("UF2 file not found. Please build the project first.")
-  exec "python3 deps/uf2/utils/uf2conv.py --deploy " & uf2Path
+  exec "python3 tools/uf2/uf2conv.py --deploy " & uf2Path
 
 task gendot, "Generate DOT file from module dependencies":
   exec "nim genDepend " & buildPathFlags() & buildDefines() & srcDir / entryModule & ".nim"
